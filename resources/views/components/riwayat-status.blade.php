@@ -1,20 +1,20 @@
 {{-- Riwayat perubahan status pesanan (tabel riwayat_status_pemesanan) --}}
-<div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-    <h3 class="font-semibold text-[#172B23] mb-4">Riwayat status</h3>
-    <ol class="relative border-l-2 border-[#E4F2E8] ml-2 space-y-5">
+<div class="card card-body">
+    <h2 class="card-title mb-5 flex items-center gap-2"><x-icon name="clock" class="h-5 w-5 text-primary" /> Riwayat status</h2>
+    <ol class="relative ml-2 space-y-6 border-l-2 border-primary-soft">
         @foreach ($pemesanan->riwayatStatus as $r)
-            <li class="ml-5">
-                <span class="absolute -left-[9px] w-4 h-4 rounded-full border-2 border-white {{ $loop->last ? 'bg-[#176B4D]' : 'bg-[#20A66A]/40' }}"></span>
+            <li class="relative pl-6">
+                <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-[3px] border-white {{ $loop->last ? 'bg-primary ring-4 ring-primary/15' : 'bg-mint' }}"></span>
                 <div class="flex flex-wrap items-center gap-2">
                     @if ($r->status_sebelumnya)
-                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full {{ \App\Models\Pemesanan::warna($r->status_sebelumnya) }}">{{ \App\Models\Pemesanan::STATUS[$r->status_sebelumnya] ?? $r->status_sebelumnya }}</span>
-                        <span class="text-xs text-[#52645B]">→</span>
+                        <x-badge :status="$r->status_sebelumnya" :dot="false">{{ \App\Models\Pemesanan::STATUS[$r->status_sebelumnya] ?? $r->status_sebelumnya }}</x-badge>
+                        <x-icon name="arrow-right" class="h-4 w-4 text-muted" />
                     @endif
-                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full {{ \App\Models\Pemesanan::warna($r->status_baru) }}">{{ \App\Models\Pemesanan::STATUS[$r->status_baru] ?? $r->status_baru }}</span>
+                    <x-badge :status="$r->status_baru">{{ \App\Models\Pemesanan::STATUS[$r->status_baru] ?? $r->status_baru }}</x-badge>
                 </div>
-                <p class="text-xs text-[#52645B] mt-1">{{ $r->tanggal_perubahan->translatedFormat('d F Y, H:i') }} · oleh {{ $r->pengubah?->nama ?? 'Sistem' }}</p>
+                <p class="mt-1.5 text-xs text-muted">{{ $r->tanggal_perubahan->translatedFormat('d F Y, H:i') }} · oleh {{ $r->pengubah?->nama ?? 'Sistem' }}</p>
                 @if ($r->catatan_perubahan)
-                    <p class="text-sm text-[#172B23] mt-1">{{ $r->catatan_perubahan }}</p>
+                    <p class="mt-1.5 rounded-lg bg-canvas px-3 py-2 text-sm text-ink">{{ $r->catatan_perubahan }}</p>
                 @endif
             </li>
         @endforeach

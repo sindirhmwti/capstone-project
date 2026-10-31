@@ -2,93 +2,81 @@
 @section('title', 'Beranda Pekerja')
 @section('content')
 
-@include('components.page-header', ['crumb' => 'Calon Pekerja / Beranda Pekerja', 'title' => 'Beranda Pekerja'])
+@include('components.page-header', ['crumb' => 'Calon Pekerja / Beranda', 'title' => 'Beranda Pekerja'])
 
 {{-- Sambutan --}}
-<div class="bg-gradient-to-r from-[#176B4D] to-[#104C38] rounded-2xl p-6 sm:p-8 mb-6 text-white">
-    <h1 class="text-2xl sm:text-3xl font-bold mb-1">Selamat datang, {{ $pengguna->nama }}!</h1>
-    <p class="text-green-100">{{ $profil->labelKategori() }} · Lengkapi profil agar informasi keahlian Anda tetap sesuai.</p>
+<div class="reveal relative mb-6 overflow-hidden rounded-2xl bg-primary p-6 text-white sm:p-8">
+    <div class="pointer-events-none absolute -right-10 -top-16 h-56 w-56 rounded-full bg-white/5"></div>
+    <div class="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-mint">{{ $profil->labelKategori() }}</p>
+            <h2 class="mt-2 text-2xl font-bold text-white sm:text-3xl">Selamat datang, {{ $pengguna->nama }}!</h2>
+            <p class="mt-2 max-w-lg text-base text-white/80">Lengkapi profil agar informasi keahlian Anda tetap sesuai dan mudah ditemukan klien.</p>
+        </div>
+        <div class="w-full shrink-0 rounded-2xl bg-white/10 p-4 md:w-64">
+            <div class="flex items-center justify-between text-sm">
+                <span class="text-white/80">Kelengkapan profil</span>
+                <span class="text-lg font-bold">{{ $profileCompletion }}%</span>
+            </div>
+            <div class="mt-2 h-2.5 overflow-hidden rounded-full bg-white/20">
+                <div class="h-2.5 rounded-full bg-mint transition-all duration-700" style="width: {{ $profileCompletion }}%"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 {{-- Ringkasan --}}
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <div class="w-10 h-10 bg-[#E4F2E8] rounded-xl flex items-center justify-center mb-3">
-            <svg class="w-5 h-5 text-[#176B4D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+<div class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <x-stat icon="user-check" label="Status akun" :value="ucfirst($pengguna->status_akun)" tone="brand" />
+    <div class="card reveal flex items-start gap-4 p-5">
+        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600"><x-icon name="shield-check" class="h-6 w-6" /></span>
+        <div>
+            <p class="text-sm text-muted">Status verifikasi</p>
+            <div class="mt-1.5"><x-badge :status="$profil->status_verifikasi">{{ $profil->labelStatus() }}</x-badge></div>
         </div>
-        <p class="text-sm text-[#52645B] mb-1">Status Akun</p>
-        <span class="inline-flex items-center px-2.5 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-semibold">● {{ ucfirst($pengguna->status_akun) }}</span>
     </div>
-
-    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center mb-3">
-            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622C17.176 19.29 21 14.591 21 9a12.02 12.02 0 00-.382-3.016z" /></svg>
-        </div>
-        <p class="text-sm text-[#52645B] mb-1">Status Verifikasi</p>
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $profil->warnaStatus() }}">{{ $profil->labelStatus() }}</span>
-    </div>
-
-    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-3">
-            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
-        </div>
-        <p class="text-2xl font-bold text-[#172B23]">{{ $stats['documents_uploaded'] }} / {{ count($profil->dokumenWajib()) }}</p>
-        <p class="text-xs text-[#52645B] mt-0.5">Dokumen Diunggah</p>
-    </div>
-
-    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center mb-3">
-            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-9.9-4.524M9 11v3.159a2 2 0 01-.595 1.436L7 17h5m-1 4a2 2 0 01-4 0" /></svg>
-        </div>
-        <p class="text-2xl font-bold text-[#172B23]">{{ $stats['notifications'] }}</p>
-        <p class="text-xs text-[#52645B] mt-0.5">Notifikasi Baru</p>
-    </div>
+    <x-stat icon="file-text" label="Dokumen diunggah" :value="$stats['documents_uploaded'] . ' / ' . count($profil->dokumenWajib())" tone="blue" :href="route('worker.verification')" />
+    <x-stat icon="bell" label="Notifikasi baru" :value="$stats['notifications']" tone="rose" :href="route('worker.notifications')" />
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    {{-- Kelengkapan profil --}}
-    <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold text-[#172B23]">Kelengkapan Profil</h2>
-            <span class="text-2xl font-bold text-[#176B4D]">{{ $profileCompletion }}%</span>
-        </div>
-        <div class="bg-gray-200 rounded-full h-3 mb-6">
-            <div class="bg-[#176B4D] h-3 rounded-full transition-all duration-500" style="width: {{ $profileCompletion }}%"></div>
-        </div>
-        <ul class="space-y-3">
-            @foreach ($profileSections as $section)
-                <li class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 {{ $section['done'] ? 'bg-green-100' : 'bg-gray-100' }}">
-                            <svg class="w-3.5 h-3.5 {{ $section['done'] ? 'text-green-600' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" /></svg>
-                        </div>
-                        <span class="text-sm {{ $section['done'] ? 'text-[#172B23]' : 'text-[#52645B]' }}">{{ $section['label'] }}</span>
-                    </div>
-                    @if (! $section['done'])
-                        <a href="{{ $section['link'] }}" class="text-xs font-medium text-[#176B4D] hover:text-[#104C38] hover:underline">Lengkapi →</a>
+<div class="grid gap-6 lg:grid-cols-3">
+    {{-- Langkah kelengkapan --}}
+    <div class="card card-body reveal lg:col-span-2">
+        <h2 class="card-title">Langkah melengkapi profil</h2>
+        <p class="mt-1 text-sm text-muted">Selesaikan semua langkah agar profil Anda dapat diverifikasi admin.</p>
+        <ol class="mt-5 space-y-3">
+            @foreach ($profileSections as $i => $section)
+                <li class="flex items-center gap-4 rounded-xl border p-3.5 {{ $section['done'] ? 'border-green-200 bg-green-50/50' : 'border-line' }}">
+                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold {{ $section['done'] ? 'bg-green-600 text-white' : 'bg-canvas text-muted ring-1 ring-line' }}">
+                        @if ($section['done']) <x-icon name="check" class="h-4 w-4" /> @else {{ $i + 1 }} @endif
+                    </span>
+                    <span class="flex-1 text-sm font-medium {{ $section['done'] ? 'text-ink' : 'text-muted' }}">{{ $section['label'] }}</span>
+                    @if ($section['done'])
+                        <span class="text-sm font-semibold text-green-700">Selesai</span>
                     @else
-                        <span class="text-xs text-green-600 font-medium">Selesai</span>
+                        <a href="{{ $section['link'] }}" class="btn-outline btn-sm">Lengkapi</a>
                     @endif
                 </li>
             @endforeach
-        </ul>
+        </ol>
     </div>
 
     {{-- Notifikasi terbaru --}}
-    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold text-[#172B23]">Notifikasi</h2>
-            @if (Route::has('worker.notifications'))
-                <a href="{{ route('worker.notifications') }}" class="text-xs font-medium text-[#176B4D] hover:underline">Lihat semua</a>
-            @endif
+    <div class="card card-body reveal">
+        <div class="flex items-center justify-between">
+            <h2 class="card-title">Notifikasi terbaru</h2>
+            <a href="{{ route('worker.notifications') }}" class="text-sm font-medium text-primary hover:underline">Lihat semua</a>
         </div>
         @forelse ($notifikasiTerbaru as $n)
-            <div class="py-3 border-b border-gray-100 last:border-0">
-                <p class="text-sm font-medium text-[#172B23]">{{ $n->judul }}</p>
-                <p class="text-xs text-[#52645B] mt-0.5">{{ $n->tanggal_dibuat->diffForHumans() }}</p>
+            <div class="flex gap-3 border-b border-line py-3.5 last:border-0">
+                <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full {{ $n->sudah_dibaca ? 'bg-gray-300' : 'bg-primary-accent' }}"></span>
+                <div class="min-w-0">
+                    <p class="text-sm font-medium text-ink">{{ $n->judul }}</p>
+                    <p class="text-xs text-muted">{{ $n->tanggal_dibuat->diffForHumans() }}</p>
+                </div>
             </div>
         @empty
-            <p class="text-sm text-[#52645B]">Belum terdapat notifikasi.</p>
+            <x-empty-state illustration="notifikasi" title="Belum ada notifikasi" compact />
         @endforelse
     </div>
 </div>
@@ -96,45 +84,22 @@
 {{-- Status verifikasi --}}
 @php
     $kartu = [
-        'belum_lengkap' => ['border-gray-300 bg-white', 'text-[#172B23]', 'Lengkapi Data untuk Verifikasi', 'Profil Anda belum tampil di katalog klien. Lengkapi profil, kriteria khusus, dan dokumen, lalu ajukan verifikasi.'],
-        'menunggu' => ['border-amber-300 bg-amber-50', 'text-amber-800', 'Menunggu Verifikasi Admin', 'Dokumen Anda sedang dalam proses peninjauan oleh admin. Anda akan mendapat notifikasi setelah proses selesai.'],
-        'terverifikasi' => ['border-green-300 bg-green-50', 'text-green-800', 'Profil Terverifikasi', 'Profil Anda telah diverifikasi dan dapat dilihat oleh klien di katalog pekerja.'],
-        'ditolak' => ['border-red-300 bg-red-50', 'text-red-800', 'Verifikasi Ditolak', 'Perbaiki data sesuai catatan admin, lalu ajukan verifikasi kembali.'],
+        'belum_lengkap' => ['border-line bg-white', 'info', 'text-primary', 'Lengkapi data untuk verifikasi', 'Profil Anda belum tampil di katalog klien. Lengkapi profil, kriteria khusus, dan dokumen, lalu ajukan verifikasi.'],
+        'menunggu' => ['border-amber-200 bg-amber-50', 'clock', 'text-amber-600', 'Menunggu verifikasi admin', 'Dokumen Anda sedang diperiksa admin. Anda akan mendapat notifikasi setelah proses selesai.'],
+        'terverifikasi' => ['border-green-200 bg-green-50', 'shield-check', 'text-green-600', 'Profil terverifikasi', 'Profil Anda sudah diverifikasi dan tampil di katalog pekerja untuk klien.'],
+        'ditolak' => ['border-red-200 bg-red-50', 'alert-circle', 'text-red-600', 'Verifikasi ditolak', 'Perbaiki data sesuai catatan admin, lalu ajukan verifikasi kembali.'],
     ][$profil->status_verifikasi];
 @endphp
-<div class="border-2 rounded-2xl p-6 mt-6 {{ $kartu[0] }}">
-    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-        <div class="flex-1">
-            <h3 class="text-lg font-semibold {{ $kartu[1] }}">{{ $kartu[2] }}</h3>
-            <p class="text-sm text-[#52645B] mt-1">{{ $kartu[3] }}</p>
-            @if ($profil->bisaDiajukan() && $profil->catatan_verifikasi)
-                <p class="text-sm text-red-700 mt-2"><strong>Catatan admin:</strong> {{ $profil->catatan_verifikasi }}</p>
-            @endif
-        </div>
-        <a href="{{ route('worker.verification') }}" class="inline-flex justify-center px-5 py-2.5 bg-[#176B4D] text-white text-sm font-semibold rounded-xl hover:bg-[#104C38]">Lihat Status Verifikasi</a>
+<div class="reveal mt-6 flex flex-col gap-4 rounded-2xl border p-5 sm:flex-row sm:items-center sm:p-6 {{ $kartu[0] }}">
+    <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white {{ $kartu[2] }}"><x-icon :name="$kartu[1]" class="h-6 w-6" /></span>
+    <div class="flex-1">
+        <h3 class="text-base font-bold text-ink">{{ $kartu[3] }}</h3>
+        <p class="mt-0.5 text-sm text-muted">{{ $kartu[4] }}</p>
+        @if ($profil->bisaDiajukan() && $profil->catatan_verifikasi)
+            <p class="mt-2 text-sm text-red-700"><strong>Catatan admin:</strong> {{ $profil->catatan_verifikasi }}</p>
+        @endif
     </div>
-</div>
-
-{{-- Aksi cepat --}}
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-    <a href="{{ route('worker.profile') }}" class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:border-[#176B4D] hover:shadow-md transition-all flex items-center gap-4 group">
-        <div class="w-12 h-12 bg-[#E4F2E8] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#176B4D] transition-colors">
-            <svg class="w-6 h-6 text-[#176B4D] group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-        </div>
-        <div>
-            <p class="font-semibold text-[#172B23]">Profil Pekerja</p>
-            <p class="text-xs text-[#52645B] mt-0.5">Isi dan perbarui informasi Anda</p>
-        </div>
-    </a>
-    <a href="{{ Route::has('worker.notifications') ? route('worker.notifications') : '#' }}" class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:border-[#176B4D] hover:shadow-md transition-all flex items-center gap-4 group">
-        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-red-500 transition-colors">
-            <svg class="w-6 h-6 text-red-500 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-9.9-4.524M9 11v3.159a2 2 0 01-.595 1.436L7 17h5m-1 4a2 2 0 01-4 0" /></svg>
-        </div>
-        <div>
-            <p class="font-semibold text-[#172B23]">Notifikasi</p>
-            <p class="text-xs text-[#52645B] mt-0.5">Lihat aktivitas terbaru Anda</p>
-        </div>
-    </a>
+    <a href="{{ route('worker.verification') }}" class="btn-primary">Lihat status verifikasi</a>
 </div>
 
 @endsection

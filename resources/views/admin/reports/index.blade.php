@@ -2,84 +2,78 @@
 @section('title', 'Laporan Penyaluran')
 @section('content')
 
-@include('components.page-header', ['crumb' => 'Admin / Laporan Penyaluran', 'title' => 'Laporan Penyaluran'])
+@include('components.page-header', [
+    'crumb' => 'Admin / Laporan Penyaluran',
+    'title' => 'Laporan Penyaluran',
+    'subtitle' => 'Penyaluran dihitung dari pemesanan berstatus Disetujui dan Selesai.',
+    'aksi' => $penyaluran->isEmpty()
+        ? '<span class="btn-primary opacity-50 cursor-not-allowed" aria-disabled="true">Cetak Laporan</span>'
+        : '<a href="' . route('admin.reports.print', request()->only('periode', 'kategori')) . '" target="_blank" rel="noopener" class="btn-primary"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg> Cetak Laporan</a>',
+])
 
-<div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-5">
-        <div>
-            <h3 class="font-semibold text-[#172B23]">Laporan penyaluran pekerja</h3>
-            <p class="text-xs text-[#52645B]">Penyaluran dihitung dari pemesanan berstatus <strong>Disetujui</strong> dan <strong>Selesai</strong>.</p>
+{{-- Filter periode --}}
+<form method="GET" class="card mb-6 flex flex-col gap-3 p-3 sm:flex-row sm:items-end">
+    <div class="sm:w-56">
+        <label for="periode" class="label">Periode laporan</label>
+        <input type="month" id="periode" name="periode" value="{{ $periode }}" class="input">
+    </div>
+    <div class="sm:w-56">
+        <label for="kategori" class="label">Kategori</label>
+        <select id="kategori" name="kategori" class="input">
+            <option value="">Semua kategori</option>
+            @foreach (\App\Models\ProfilPekerja::KATEGORI_SINGKAT as $kode => $label)
+                <option value="{{ $kode }}" @selected(request('kategori') === $kode)>{{ $label }}</option>
+            @endforeach
+        </select>
+    </div>
+    <button type="submit" class="btn-outline">Tampilkan</button>
+    @if ($periode || request('kategori'))
+        <a href="{{ route('admin.reports') }}" class="btn-ghost">Semua periode</a>
+    @endif
+</form>
+
+{{-- Ringkasan --}}
+<div class="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-5">
+    <div class="reveal col-span-2 rounded-2xl bg-primary p-5 text-white lg:col-span-1">
+        <p class="text-sm text-white/80">Total penyaluran</p>
+        <p class="mt-1 text-3xl font-extrabold" data-count="{{ $penyaluran->count() }}">{{ $penyaluran->count() }}</p>
+        <p class="mt-0.5 text-xs text-mint">{{ $labelPeriode }}</p>
+    </div>
+    @foreach (\App\Models\ProfilPekerja::KATEGORI_SINGKAT as $kode => $label)
+        <div class="card reveal p-5">
+            <p class="text-sm text-muted">{{ $label }}</p>
+            <p class="mt-1 text-2xl font-extrabold text-ink" data-count="{{ $perKategori[$kode] ?? 0 }}">{{ $perKategori[$kode] ?? 0 }}</p>
         </div>
-        <div class="flex flex-col sm:flex-row gap-2">
-            <form method="GET" class="flex flex-col sm:flex-row gap-2">
-                <label class="flex items-center gap-2 text-sm text-[#52645B]">
-                    Periode laporan
-                    <input type="month" name="periode" value="{{ $periode }}" class="px-3 py-2 border border-gray-200 rounded-xl text-sm text-[#172B23]">
-                </label>
-                <select name="kategori" class="px-3 py-2 border border-gray-200 rounded-xl text-sm bg-white">
-                    <option value="">Semua kategori</option>
-                    @foreach (\App\Models\ProfilPekerja::KATEGORI_SINGKAT as $kode => $label)
-                        <option value="{{ $kode }}" @selected(request('kategori') === $kode)>{{ $label }}</option>
+    @endforeach
+    <div class="card reveal p-5">
+        <p class="text-sm text-muted">Selesai</p>
+        <p class="mt-1 text-2xl font-extrabold text-ink">{{ $perStatus['selesai'] ?? 0 }}</p>
+        <p class="text-xs text-muted">{{ $perStatus['disetujui'] ?? 0 }} masih berjalan</p>
+    </div>
+</div>
+
+<div class="card">
+    @if ($penyaluran->isEmpty())
+        <x-empty-state illustration="kosong" title="Data penyaluran tidak tersedia untuk {{ strtolower($labelPeriode) }}." message="Pilih periode atau kategori lain." />
+    @else
+        <div class="table-wrap p-2">
+            <table class="table-base">
+                <thead><tr><th>Nama pekerja</th><th>Jenis pekerjaan</th><th>Klien</th><th>Lokasi</th><th>Status</th><th>Tanggal</th></tr></thead>
+                <tbody>
+                    @foreach ($penyaluran as $o)
+                        <tr>
+                            <td><p class="font-semibold text-ink">{{ $o->profilPekerja->pengguna->nama }}</p><p class="text-xs text-muted">{{ $o->kode() }}</p></td>
+                            <td>{{ $o->profilPekerja->labelKategori() }}</td>
+                            <td>{{ $o->klien->nama }}</td>
+                            <td>{{ $o->lokasi_kerja ?: $o->profilPekerja->alamat }}</td>
+                            <td><x-badge :status="$o->status_pemesanan">{{ $o->labelStatus() }}</x-badge></td>
+                            <td class="text-muted">{{ $o->tanggal_pemesanan->translatedFormat('d M Y') }}</td>
+                        </tr>
                     @endforeach
-                </select>
-                <button class="px-4 py-2 border border-[#176B4D] text-[#176B4D] text-sm font-semibold rounded-xl hover:bg-[#E4F2E8]">Tampilkan</button>
-                @if ($periode || request('kategori'))
-                    <a href="{{ route('admin.reports') }}" class="px-3 py-2 text-sm text-[#52645B] hover:underline self-center">Semua periode</a>
-                @endif
-            </form>
-            <a href="{{ route('admin.reports.print', request()->only('periode', 'kategori')) }}" target="_blank"
-               class="px-4 py-2 bg-[#176B4D] text-white text-sm font-semibold rounded-xl hover:bg-[#104C38] text-center {{ $penyaluran->isEmpty() ? 'pointer-events-none opacity-50' : '' }}">
-                Cetak Laporan
-            </a>
+                </tbody>
+            </table>
         </div>
-    </div>
-
-    {{-- Ringkasan --}}
-    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-5">
-        <div class="bg-[#E4F2E8] rounded-xl p-4">
-            <p class="text-2xl font-bold text-[#104C38]">{{ $penyaluran->count() }}</p>
-            <p class="text-xs text-[#52645B]">Total penyaluran · {{ $labelPeriode }}</p>
-        </div>
-        @foreach (\App\Models\ProfilPekerja::KATEGORI_SINGKAT as $kode => $label)
-            <div class="bg-[#F5F7F5] rounded-xl p-4">
-                <p class="text-2xl font-bold text-[#172B23]">{{ $perKategori[$kode] ?? 0 }}</p>
-                <p class="text-xs text-[#52645B]">{{ $label }}</p>
-            </div>
-        @endforeach
-        <div class="bg-[#F5F7F5] rounded-xl p-4">
-            <p class="text-2xl font-bold text-[#172B23]">{{ $perStatus['selesai'] ?? 0 }}</p>
-            <p class="text-xs text-[#52645B]">Selesai · {{ $perStatus['disetujui'] ?? 0 }} berjalan</p>
-        </div>
-    </div>
-
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-            <thead>
-                <tr class="text-left text-xs text-[#52645B] bg-[#F5F7F5]">
-                    <th class="px-3 py-2.5 font-medium rounded-l-lg">Nama pekerja</th>
-                    <th class="px-3 py-2.5 font-medium">Jenis pekerjaan</th>
-                    <th class="px-3 py-2.5 font-medium">Klien</th>
-                    <th class="px-3 py-2.5 font-medium">Lokasi</th>
-                    <th class="px-3 py-2.5 font-medium">Status</th>
-                    <th class="px-3 py-2.5 font-medium rounded-r-lg">Tanggal</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($penyaluran as $o)
-                    <tr class="border-b border-gray-50 last:border-0">
-                        <td class="px-3 py-3"><p class="font-medium">{{ $o->profilPekerja->pengguna->nama }}</p><p class="text-xs text-[#52645B]">{{ $o->kode() }}</p></td>
-                        <td class="px-3 py-3">{{ $o->profilPekerja->labelKategori() }}</td>
-                        <td class="px-3 py-3">{{ $o->klien->nama }}</td>
-                        <td class="px-3 py-3">{{ $o->lokasi_kerja ?: $o->profilPekerja->alamat }}</td>
-                        <td class="px-3 py-3"><span class="text-xs font-semibold px-2 py-0.5 rounded-full {{ $o->warnaStatus() }}">{{ $o->labelStatus() }}</span></td>
-                        <td class="px-3 py-3 text-[#52645B]">{{ $o->tanggal_pemesanan->translatedFormat('d M Y') }}</td>
-                    </tr>
-                @empty
-                    <tr><td colspan="6" class="px-3 py-10 text-center text-[#52645B]">Data penyaluran tidak tersedia untuk {{ strtolower($labelPeriode) }}.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+    @endif
 </div>
 
 @endsection

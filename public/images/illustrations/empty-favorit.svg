@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" role="img" aria-label="Belum ada favorit">
+  <ellipse cx="100" cy="134" rx="62" ry="7" fill="#13201B" opacity=".06"/>
+  <circle cx="100" cy="72" r="58" fill="#E8F3EE"/>
+  <rect x="58" y="40" width="84" height="80" rx="14" fill="#FFFFFF" stroke="#D5E6DE" stroke-width="2.5"/>
+  <circle cx="82" cy="64" r="11" fill="#B9DECF"/>
+  <rect x="98" y="58" width="32" height="6" rx="3" fill="#D5E6DE"/>
+  <rect x="98" y="70" width="22" height="6" rx="3" fill="#E8F3EE"/>
+  <rect x="70" y="90" width="60" height="7" rx="3.5" fill="#E8F3EE"/>
+  <rect x="70" y="102" width="40" height="7" rx="3.5" fill="#E8F3EE"/>
+  <circle cx="140" cy="40" r="20" fill="#FFFFFF" stroke="#F3C1B6" stroke-width="2.5"/>
+  <path d="M140 50c-7-5-11-8-11-12a5 5 0 0 1 11-2 5 5 0 0 1 11 2c0 4-4 7-11 12z" fill="none" stroke="#E8735A" stroke-width="2.5" stroke-linejoin="round"/>
+  <circle cx="40" cy="44" r="4" fill="#B9DECF"/>
+  <circle cx="166" cy="96" r="5" fill="#B9DECF"/>
+</svg>

@@ -5,78 +5,75 @@
 @include('components.page-header', [
     'crumb' => 'Admin / Verifikasi Pekerja / Pemeriksaan',
     'title' => 'Pemeriksaan Dokumen ' . $profil->labelKategori(),
-    'subtitle' => $profil->pengguna->nama . ' · ' . $profil->labelKategori(),
-    'aksi' => '<a href="' . route('admin.verification') . '" class="px-4 py-2 border border-gray-200 rounded-xl text-sm text-[#52645B] hover:bg-white">← Kembali</a>',
+    'subtitle' => $profil->pengguna->nama . ' · periksa data dan dokumen, lalu tetapkan hasil verifikasi.',
+    'aksi' => '<a href="' . route('admin.verification') . '" class="btn-secondary">Kembali</a>',
 ])
 
-<div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-    <div class="lg:col-span-3">
+<div class="grid gap-6 xl:grid-cols-5">
+    <div class="xl:col-span-3">
         @include('components.detail-pekerja', ['tampilKontak' => true, 'tampilDokumen' => false])
     </div>
 
-    <div class="lg:col-span-2 space-y-6">
-        <form method="POST" action="{{ route('admin.verification.process', $profil) }}" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+    <div class="xl:col-span-2">
+        <form method="POST" action="{{ route('admin.verification.process', $profil) }}" class="card card-body space-y-5 xl:sticky xl:top-24">
             @csrf
-            <h3 class="font-semibold text-[#172B23]">Dokumen persyaratan</h3>
+            <div class="flex items-center justify-between">
+                <h2 class="card-title">Dokumen persyaratan</h2>
+                <x-badge :status="$profil->status_verifikasi">{{ $profil->labelStatus() }}</x-badge>
+            </div>
 
             @foreach ($profil->dokumenWajib() as $jenis)
                 @php $dok = $profil->dokumenTerbaru($jenis); @endphp
-                <div class="border border-gray-200 rounded-xl p-3">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="text-sm font-medium">{{ \App\Models\DokumenPekerja::JENIS[$jenis] }}</p>
-                        @if ($dok)
-                            <span class="text-xs font-semibold px-2 py-0.5 rounded-full {{ $dok->warnaStatus() }}">{{ $dok->labelStatus() }}</span>
-                        @endif
+                <div class="rounded-2xl border border-line p-3">
+                    <div class="mb-2.5 flex items-center justify-between gap-2">
+                        <p class="flex items-center gap-2 text-sm font-semibold"><x-icon name="file-text" class="h-4 w-4 text-primary" /> {{ \App\Models\DokumenPekerja::JENIS[$jenis] }}</p>
+                        @if ($dok) <x-badge :status="$dok->status_verifikasi">{{ $dok->labelStatus() }}</x-badge> @endif
                     </div>
                     @if ($dok)
-                        {{-- Pratinjau dokumen --}}
                         @if ($dok->isGambar())
-                            <a href="{{ $dok->url() }}" target="_blank"><img src="{{ $dok->url() }}" alt="{{ $dok->labelJenis() }}" class="w-full max-h-56 object-contain bg-[#F5F7F5] rounded-lg"></a>
+                            <a href="{{ $dok->url() }}" target="_blank" rel="noopener"><img src="{{ $dok->url() }}" alt="{{ $dok->labelJenis() }} {{ $profil->pengguna->nama }}" class="max-h-60 w-full rounded-xl bg-canvas object-contain"></a>
                         @else
-                            <iframe src="{{ $dok->url() }}" class="w-full h-56 rounded-lg bg-[#F5F7F5]" title="{{ $dok->labelJenis() }}"></iframe>
+                            <iframe src="{{ $dok->url() }}" class="h-60 w-full rounded-xl bg-canvas" title="{{ $dok->labelJenis() }}" loading="lazy"></iframe>
                         @endif
-                        <div class="flex items-center justify-between mt-2">
-                            <a href="{{ $dok->url() }}" target="_blank" class="text-xs text-[#176B4D] hover:underline">Buka di tab baru ↗</a>
-                            <span class="text-[11px] text-[#52645B]">Diunggah {{ $dok->tanggal_unggah->format('d/m/Y H:i') }}</span>
+                        <div class="mt-2 flex flex-wrap items-center justify-between gap-1 text-xs">
+                            <a href="{{ $dok->url() }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 font-medium text-primary hover:underline">Buka <x-icon name="external-link" class="h-3.5 w-3.5" /></a>
+                            <span class="text-muted">Diunggah {{ $dok->tanggal_unggah->format('d/m/Y H:i') }}</span>
                         </div>
                         @if ($profil->status_verifikasi === 'menunggu')
-                            <div class="flex gap-4 mt-2 text-sm">
-                                <label class="flex items-center gap-1.5"><input type="radio" name="dokumen[{{ $dok->id_dokumen }}]" value="valid" class="accent-[#176B4D]" @checked(old('dokumen.' . $dok->id_dokumen, 'valid') === 'valid')> Valid</label>
-                                <label class="flex items-center gap-1.5"><input type="radio" name="dokumen[{{ $dok->id_dokumen }}]" value="tidak_valid" class="accent-red-600" @checked(old('dokumen.' . $dok->id_dokumen) === 'tidak_valid')> Tidak valid</label>
+                            <div class="mt-3 grid grid-cols-2 gap-2" role="radiogroup" aria-label="Status {{ $dok->labelJenis() }}">
+                                @foreach (['valid' => ['Valid', 'check', 'peer-checked:border-green-600 peer-checked:bg-green-600'], 'tidak_valid' => ['Tidak valid', 'x', 'peer-checked:border-red-600 peer-checked:bg-red-600']] as $v => [$label, $ikon, $warna])
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="dokumen[{{ $dok->id_dokumen }}]" value="{{ $v }}" class="peer sr-only" @checked(old('dokumen.' . $dok->id_dokumen, 'valid') === $v)>
+                                        <span class="flex items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-sm font-semibold text-muted transition-colors peer-checked:text-white peer-focus-visible:ring-4 peer-focus-visible:ring-primary/20 {{ $warna }}">
+                                            <x-icon :name="$ikon" class="h-4 w-4" /> {{ $label }}
+                                        </span>
+                                    </label>
+                                @endforeach
                             </div>
                         @endif
                     @else
-                        <p class="text-xs text-red-600">Dokumen belum diunggah.</p>
+                        <p class="flex items-center gap-1.5 text-sm text-red-600"><x-icon name="x-circle" class="h-4 w-4" /> Dokumen belum diunggah.</p>
                     @endif
                 </div>
             @endforeach
 
             @if ($profil->status_verifikasi === 'menunggu')
-                <div>
-                    <label for="catatan" class="block text-sm font-medium mb-1.5">Catatan pemeriksaan</label>
-                    <textarea id="catatan" name="catatan" rows="3" placeholder="Jelaskan perbaikan yang diperlukan (wajib bila diminta perbaikan / ditolak)"
-                              class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#176B4D]">{{ old('catatan') }}</textarea>
-                    @error('catatan') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-                </div>
-
-                <div class="grid grid-cols-3 gap-2">
-                    <button name="keputusan" value="perbaikan" class="py-2.5 border border-amber-400 text-amber-700 text-sm font-semibold rounded-xl hover:bg-amber-50"
-                            onclick="return confirm('Minta pekerja memperbaiki data/dokumen?')">Minta Perbaikan</button>
-                    <button name="keputusan" value="setujui" class="py-2.5 bg-[#176B4D] text-white text-sm font-semibold rounded-xl hover:bg-[#104C38]"
-                            onclick="return confirm('Setujui verifikasi pekerja ini? Profil akan tampil di katalog klien.')">Setujui</button>
-                    <button name="keputusan" value="tolak" class="py-2.5 border border-red-300 text-red-600 text-sm font-semibold rounded-xl hover:bg-red-50"
-                            onclick="return confirm('Tolak verifikasi pekerja ini?')">Tolak</button>
+                <x-field name="catatan" type="textarea" label="Catatan pemeriksaan" placeholder="Jelaskan perbaikan yang diperlukan (wajib bila diminta perbaikan atau ditolak)" />
+                <div class="grid gap-2 sm:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-3">
+                    <button type="submit" name="keputusan" value="setujui" class="btn-primary" data-confirm="Setujui verifikasi? Profil akan tampil di katalog klien."><x-icon name="check" class="h-4 w-4" /> Setujui</button>
+                    <button type="submit" name="keputusan" value="perbaikan" class="btn border border-amber-300 bg-white text-amber-800 hover:bg-amber-50" data-confirm="Minta pekerja memperbaiki data/dokumen?">Minta Perbaikan</button>
+                    <button type="submit" name="keputusan" value="tolak" class="btn-danger" data-confirm="Tolak verifikasi pekerja ini?"><x-icon name="x" class="h-4 w-4" /> Tolak</button>
                 </div>
             @else
-                <div class="bg-[#F5F7F5] rounded-xl p-4 text-sm">
-                    <p>Status saat ini: <span class="font-semibold">{{ $profil->labelStatus() }}</span></p>
+                <div class="rounded-xl bg-canvas p-4 text-sm">
+                    <p class="text-muted">Status saat ini: <strong class="text-ink">{{ $profil->labelStatus() }}</strong></p>
                     @if ($profil->verifikator)
-                        <p class="text-[#52645B] mt-1">Diperiksa oleh {{ $profil->verifikator->nama }} pada {{ $profil->tanggal_verifikasi?->translatedFormat('d F Y H:i') }}</p>
+                        <p class="mt-1 text-muted">Diperiksa oleh {{ $profil->verifikator->nama }} pada {{ $profil->tanggal_verifikasi?->translatedFormat('d F Y H:i') }}</p>
                     @endif
                     @if ($profil->catatan_verifikasi)
-                        <p class="text-[#52645B] mt-1">Catatan: {{ $profil->catatan_verifikasi }}</p>
+                        <p class="mt-1 text-muted">Catatan: {{ $profil->catatan_verifikasi }}</p>
                     @endif
-                    <p class="text-xs text-[#52645B] mt-2">Pemeriksaan hanya dapat dilakukan saat pekerja berstatus "Menunggu Verifikasi".</p>
+                    <p class="text-helper mt-2">Pemeriksaan hanya dapat dilakukan saat pekerja berstatus "Menunggu Verifikasi".</p>
                 </div>
             @endif
         </form>

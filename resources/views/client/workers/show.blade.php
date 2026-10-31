@@ -5,57 +5,62 @@
 @include('components.page-header', [
     'crumb' => 'Klien / Katalog Pekerja / Detail',
     'title' => 'Detail Profil Pekerja',
-    'aksi' => '<a href="' . (url()->previous() !== url()->current() ? url()->previous() : route('client.workers')) . '" class="px-4 py-2 border border-gray-200 rounded-xl text-sm text-[#52645B] hover:bg-white">← Kembali</a>',
+    'subtitle' => 'Periksa keahlian dan kriteria khusus sebelum mengajukan pemesanan.',
+    'aksi' => '<a href="' . route('client.workers') . '" class="btn-secondary"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg> Kembali ke katalog</a>',
 ])
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="grid gap-6 lg:grid-cols-3">
     <div class="lg:col-span-2">
         @include('components.detail-pekerja', ['tampilKontak' => false, 'tampilDokumen' => false, 'sorotKriteria' => $idKriteria])
     </div>
 
-    <div class="space-y-6">
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+    <aside class="space-y-6 lg:sticky lg:top-24 lg:self-start">
+        <div class="card card-body">
             @if ($skor)
-                <p class="text-sm text-[#52645B]">Skor kecocokan</p>
-                <p class="text-4xl font-bold text-[#176B4D] mt-1">{{ number_format($skor['skor'], 1, ',', '.') }}%</p>
-                <div class="h-2 bg-gray-100 rounded-full overflow-hidden mt-2">
-                    <div class="h-2 bg-[#176B4D] rounded-full" style="width: {{ $skor['skor'] }}%"></div>
+                <p class="text-sm font-medium text-muted">Skor kecocokan</p>
+                <p class="mt-1 text-4xl font-extrabold text-primary">{{ number_format($skor['skor'], 1, ',', '.') }}%</p>
+                <div class="mt-3 h-2.5 overflow-hidden rounded-full bg-primary-soft" role="progressbar" aria-label="Skor kecocokan" aria-valuenow="{{ $skor['skor'] }}" aria-valuemin="0" aria-valuemax="100">
+                    <div class="h-2.5 rounded-full bg-primary" style="width: {{ $skor['skor'] }}%"></div>
                 </div>
-                <p class="text-xs text-[#52645B] mt-2">Memenuhi {{ $skor['cocok'] }} dari {{ $skor['total'] }} kriteria yang Anda cari.</p>
+                <p class="mt-2 text-sm text-muted">Memenuhi <strong class="text-ink">{{ $skor['cocok'] }} dari {{ $skor['total'] }}</strong> kriteria yang Anda cari.</p>
             @else
-                <p class="text-sm text-[#52645B]">Pilih kriteria khusus di katalog untuk melihat skor kecocokan pekerja ini.</p>
+                <div class="flex gap-3 text-sm text-muted">
+                    <x-icon name="sparkles" class="h-5 w-5 text-primary" />
+                    <p>Pilih kriteria khusus di katalog untuk melihat skor kecocokan pekerja ini.</p>
+                </div>
             @endif
 
-            <div class="grid grid-cols-2 gap-3 mt-5 text-center">
-                <div class="bg-[#F5F7F5] rounded-xl p-3">
-                    <p class="text-lg font-bold text-[#172B23]">{{ $profil->lama_pengalaman }} th</p>
-                    <p class="text-xs text-[#52645B]">Pengalaman</p>
+            <div class="mt-5 grid grid-cols-2 gap-3 text-center">
+                <div class="rounded-xl bg-canvas p-3">
+                    <p class="text-xl font-bold text-ink">{{ $profil->lama_pengalaman }} th</p>
+                    <p class="text-xs text-muted">Pengalaman</p>
                 </div>
-                <div class="bg-[#F5F7F5] rounded-xl p-3">
-                    <p class="text-lg font-bold text-[#172B23]">{{ $jumlahPenyaluran }}</p>
-                    <p class="text-xs text-[#52645B]">Penyaluran</p>
+                <div class="rounded-xl bg-canvas p-3">
+                    <p class="text-xl font-bold text-ink">{{ $jumlahPenyaluran }}</p>
+                    <p class="text-xs text-muted">Penyaluran</p>
                 </div>
             </div>
 
-            <div class="space-y-2 mt-5">
-                @if (Route::has('client.orders.create'))
-                    <a href="{{ route('client.orders.create', $profil) }}" class="block text-center py-3 bg-[#176B4D] text-white font-semibold rounded-xl hover:bg-[#104C38]">Ajukan Pemesanan</a>
-                @endif
+            <div class="mt-5 space-y-2.5">
+                <a href="{{ route('client.orders.create', $profil) }}" class="btn-primary btn-lg w-full"><x-icon name="clipboard" class="h-5 w-5" /> Ajukan Pemesanan</a>
                 <form method="POST" action="{{ $favorit ? route('client.favorites.destroy', $profil) : route('client.favorites.store', $profil) }}">
                     @csrf
                     @if ($favorit) @method('DELETE') @endif
-                    <button class="w-full py-3 border rounded-xl text-sm font-semibold {{ $favorit ? 'border-red-200 text-red-600 hover:bg-red-50' : 'border-[#176B4D] text-[#176B4D] hover:bg-[#E4F2E8]' }}">
-                        {{ $favorit ? '♥ Hapus dari Favorit' : '♡ Simpan ke Favorit' }}
+                    <button type="submit" class="{{ $favorit ? 'btn-danger' : 'btn-outline' }} w-full">
+                        <x-icon name="heart" class="h-5 w-5 {{ $favorit ? 'fill-current' : '' }}" /> {{ $favorit ? 'Hapus dari Favorit' : 'Simpan ke Favorit' }}
                     </button>
                 </form>
             </div>
         </div>
 
-        <div class="bg-[#E4F2E8] rounded-2xl p-5 text-sm text-[#104C38]">
-            <p class="font-semibold mb-1">Data terverifikasi admin</p>
-            <p class="text-xs">Dokumen identitas{{ $profil->wajibSertifikat() ? ' dan sertifikat pelatihan' : '' }} pekerja telah diperiksa oleh admin PT Shaka Abadi Nusantara. Kontak pekerja diberikan oleh admin setelah pesanan disetujui.</p>
+        <div class="flex gap-3 rounded-2xl bg-primary-soft p-5 text-sm text-primary-darker">
+            <x-icon name="shield-check" class="h-6 w-6 text-primary" />
+            <div>
+                <p class="font-semibold">Data terverifikasi admin</p>
+                <p class="mt-0.5 text-primary-dark/80">Dokumen identitas{{ $profil->wajibSertifikat() ? ' dan sertifikat pelatihan' : '' }} pekerja telah diperiksa. Kontak pekerja diberikan admin setelah pesanan disetujui.</p>
+            </div>
         </div>
-    </div>
+    </aside>
 </div>
 
 @endsection

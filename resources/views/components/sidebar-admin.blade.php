@@ -1,12 +1,10 @@
 @include('components.sidebar', [
-    'sidebarId' => 'sidebar-admin',
-    'beranda' => 'admin.dashboard',
     'labelPeran' => 'Admin',
     'menu' => [
         ['Dashboard Admin', 'admin.dashboard', 'admin.dashboard', 'grid'],
-        ['Katalog Pekerja', 'admin.catalog', 'admin.catalog*', 'list'],
+        ['Katalog Pekerja', 'admin.catalog', 'admin.catalog*', 'search'],
         ['Kelola Akun Pekerja', 'admin.workers', 'admin.workers*', 'users'],
-        ['Verifikasi Pekerja', 'admin.verification', 'admin.verification*', 'shield'],
+        ['Verifikasi Pekerja', 'admin.verification', 'admin.verification*', 'shield-check'],
         ['Kelola Pemesanan', 'admin.orders', 'admin.orders*', 'clipboard'],
         ['Laporan Penyaluran', 'admin.reports', 'admin.reports*', 'chart'],
         ['Notifikasi', 'admin.notifications', 'admin.notifications*', 'bell', auth()->user()->jumlahNotifikasiBelumDibaca()],

@@ -5,30 +5,172 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+/* =========================================================
+   Tema Temukerja — warna diambil dari logo
+   ========================================================= */
 @theme {
-    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, 'Segoe UI', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
 
-    /* Temukerja Brand Colors */
-    --color-primary: #176B4D;
-    --color-primary-dark: #104C38;
-    --color-primary-accent: #20A66A;
-    --color-primary-soft: #E4F2E8;
-    --color-bg: #F5F7F5;
-    --color-text-primary: #172B23;
-    --color-text-secondary: #52645B;
+    /* Warna utama */
+    --color-primary: #246C54;          /* hijau tua logo */
+    --color-primary-dark: #1A5240;
+    --color-primary-darker: #123A2E;
+    --color-primary-accent: #3BA877;   /* hijau muda (aksen) */
+    --color-primary-soft: #E8F3EE;
+    --color-mint: #B9DECF;             /* titik pada ikon logo */
+
+    /* Netral */
+    --color-canvas: #F6F8F7;           /* latar halaman */
+    --color-line: #E3E9E6;             /* garis / border */
+    --color-ink: #13201B;              /* teks utama */
+    --color-muted: #4D5C55;            /* teks sekunder (tetap terbaca) */
+
+    /* Alias lama agar kelas yang sudah ada tetap berfungsi */
+    --color-bg: #F6F8F7;
+    --color-text-primary: #13201B;
+    --color-text-secondary: #4D5C55;
+
+    /* Skala tipografi: teks isi minimal 15px agar mudah dibaca */
+    --text-xs: 0.8125rem;
+    --text-xs--line-height: 1.25rem;
+    --text-sm: 0.9375rem;
+    --text-sm--line-height: 1.5rem;
+    --text-base: 1rem;
+    --text-base--line-height: 1.65rem;
+
+    --shadow-soft: 0 1px 2px rgb(19 32 27 / 0.04), 0 4px 16px -4px rgb(19 32 27 / 0.08);
+    --shadow-lift: 0 2px 4px rgb(19 32 27 / 0.05), 0 14px 32px -10px rgb(19 32 27 / 0.18);
+
+    --animate-fade-up: fade-up 0.35s ease-out both;
+
+    @keyframes fade-up {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 }
 
 @layer base {
+    html { -webkit-text-size-adjust: 100%; }
+
     body {
-        background-color: #F5F7F5;
-        color: #172B23;
-        font-family: 'Inter', sans-serif;
+        @apply bg-canvas text-ink font-sans antialiased;
+        font-size: 1rem;
+        line-height: 1.6;
     }
+
+    h1, h2, h3, h4 { @apply text-ink tracking-tight; }
+
+    ::selection { background: var(--color-mint); color: var(--color-ink); }
+
+    :focus-visible { outline: 2px solid var(--color-primary-accent); outline-offset: 2px; }
+
+    [x-cloak] { display: none !important; }
+}
+
+/* =========================================================
+   Komponen dasar (dipakai di seluruh halaman)
+   ========================================================= */
+@layer components {
+    /* Kontainer halaman publik */
+    .container-page { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+
+    /* Tipografi */
+    .page-title { @apply text-2xl sm:text-[1.75rem] font-bold leading-tight text-ink; }
+    .section-title { @apply text-3xl lg:text-4xl font-extrabold tracking-tight text-ink; }
+    .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.14em] text-primary; }
+    .text-helper { @apply text-xs text-muted; }
+
+    /* Tombol */
+    .btn, .btn-primary, .btn-secondary, .btn-outline, .btn-danger, .btn-danger-solid, .btn-ghost {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold
+               transition-colors duration-200 select-none cursor-pointer
+               disabled:cursor-not-allowed disabled:opacity-60;
+    }
+    .btn-sm { @apply px-3.5 py-2 text-sm rounded-lg; }
+    .btn-lg { @apply px-6 py-3 text-base; }
+    .btn-primary { @apply bg-primary text-white shadow-sm hover:bg-primary-dark active:bg-primary-darker; }
+    .btn-secondary { @apply border border-line bg-white text-ink hover:border-primary/40 hover:bg-primary-soft hover:text-primary-dark; }
+    .btn-outline { @apply border border-primary text-primary bg-white hover:bg-primary-soft; }
+    .btn-danger { @apply border border-red-200 bg-white text-red-600 hover:bg-red-50 hover:border-red-300; }
+    .btn-danger-solid { @apply bg-red-600 text-white hover:bg-red-700; }
+    .btn-ghost { @apply px-3 text-primary hover:bg-primary-soft; }
+
+    /* Kartu */
+    .card { @apply rounded-2xl border border-line bg-white shadow-soft; }
+    .card-body { @apply p-5 sm:p-6; }
+    .card-hover { @apply transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lift hover:border-primary/25; }
+    .card-title { @apply text-base font-semibold text-ink; }
+
+    /* Form */
+    .label { @apply mb-1.5 block text-sm font-medium text-ink; }
+    .input {
+        @apply w-full rounded-xl border border-line bg-white px-4 py-2.5 text-sm text-ink placeholder:text-gray-400
+               transition-colors duration-150 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/15
+               disabled:bg-gray-50 disabled:text-muted;
+    }
+    .input-error { @apply border-red-400 focus:border-red-500 focus:ring-red-500/15; }
+    .field-error { @apply mt-1.5 text-xs font-medium text-red-600; }
+    .required { @apply text-red-500; }
+
+    /* Badge status */
+    .badge { @apply inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold; }
+
+    /* Tabel */
+    .table-wrap { @apply -mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0; }
+    .table-base { @apply w-full min-w-[640px] text-sm; }
+    .table-base thead tr { @apply bg-canvas text-left text-xs font-semibold uppercase tracking-wide text-muted; }
+    .table-base th { @apply px-3 py-3 font-semibold first:rounded-l-lg last:rounded-r-lg; }
+    .table-base td { @apply px-3 py-3.5 align-middle; }
+    .table-base tbody tr { @apply border-b border-line/70 transition-colors last:border-0 hover:bg-canvas/70; }
+
+    /* Tab / filter pil */
+    .pill { @apply inline-flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-1.5 text-sm text-muted transition-colors hover:border-primary/30 hover:text-primary-dark; }
+    .pill-active { @apply border-primary/30 bg-primary-soft font-semibold text-primary-dark; }
+    .pill-count { @apply rounded-md bg-white/80 px-1.5 text-xs; }
+
+    /* Menu sidebar */
+    .nav-link { @apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/80 transition-colors duration-150 hover:bg-white/10 hover:text-white; }
+    .nav-link-active { @apply bg-white text-primary-dark shadow-sm hover:bg-white hover:text-primary-dark; }
 }
 
 @layer utilities {
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-    .sidebar-transition { transition: transform 0.3s ease-in-out; }
+}
+
+/* =========================================================
+   Animasi halus
+   ========================================================= */
+
+/* Muncul saat di-scroll (aktif hanya bila JavaScript berjalan) */
+.js .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.4s ease-out, transform 0.4s ease-out; }
+.js .reveal.is-visible { opacity: 1; transform: none; }
+
+/* Toast */
+.toast { transition: opacity 0.3s ease, transform 0.3s ease; }
+.toast-hide { opacity: 0; transform: translateY(-8px); }
+
+/* Tombol yang sedang memproses */
+.is-loading { pointer-events: none; opacity: 0.75; }
+.spinner { width: 1rem; height: 1rem; border-radius: 9999px; border: 2px solid currentColor; border-right-color: transparent; animation: putar 0.7s linear infinite; }
+@keyframes putar { to { transform: rotate(360deg); } }
+
+/* Kerangka loading */
+.skeleton { background: linear-gradient(90deg, #eef2f0 25%, #f7f9f8 50%, #eef2f0 75%); background-size: 200% 100%; animation: kilau 1.2s ease-in-out infinite; border-radius: 0.5rem; }
+@keyframes kilau { to { background-position: -200% 0; } }
+
+/* Hormati pengaturan "kurangi gerakan" */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    .js .reveal { opacity: 1; transform: none; }
+}
+
+/* Cetak */
+@media print {
+    body { background: #fff; }
 }

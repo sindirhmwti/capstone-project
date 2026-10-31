@@ -1,67 +1,48 @@
 @props(['role' => 'admin'])
 
 @php
-    $titles = [
-        'admin'  => 'Admin Panel',
-        'client' => 'Dashboard Klien',
-        'worker' => 'Dashboard Pekerja',
-    ];
-    $labelPeran = [
-        'admin'  => 'Admin',
-        'client' => 'Klien',
-        'worker' => 'Calon Pekerja',
-    ];
-    $pageTitle = $titles[$role] ?? 'Dashboard';
+    $labelPeran = ['admin' => 'Admin', 'client' => 'Klien', 'worker' => 'Calon Pekerja'][$role] ?? '';
     $pengguna = auth()->user();
     $jumlahNotif = $pengguna?->jumlahNotifikasiBelumDibaca() ?? 0;
-    $routeNotif = $role . '.notifications';
-    $routeProfil = $role . '.profile';
+    $routeProfil = $role === 'worker' ? 'worker.profile' : $role . '.profile';
 @endphp
 
-<header class="sticky top-0 z-40 h-16 w-full bg-white border-b border-gray-200 shadow-sm flex items-center print:hidden">
-    <div class="flex items-center justify-between w-full px-4 sm:px-6">
+<header class="sticky top-0 z-30 flex h-16 items-center border-b border-line bg-white/90 backdrop-blur print:hidden">
+    <div class="flex w-full items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
 
-        {{-- Kiri: tombol sidebar + judul --}}
-        <div class="flex items-center gap-3">
-            <button id="sidebar-toggle"
-                    type="button"
-                    class="inline-flex items-center justify-center p-2 rounded-md text-[#52645B] hover:text-[#176B4D] hover:bg-[#E4F2E8] focus:outline-none transition-colors duration-150 lg:hidden"
-                    aria-label="Buka sidebar">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
+        <div class="flex min-w-0 items-center gap-2">
+            <button type="button" class="-ml-2 rounded-lg p-2 text-muted hover:bg-canvas hover:text-ink lg:hidden" data-sidebar-open aria-label="Buka menu" aria-controls="sidebar">
+                <x-icon name="menu" class="h-6 w-6" />
             </button>
-
-            <h1 class="text-base sm:text-lg font-semibold text-[#172B23]">@yield('title', $pageTitle)</h1>
+            <x-logo :text="false" size="h-8" class="lg:hidden" />
+            <nav class="hidden min-w-0 items-center gap-2 text-sm sm:flex" aria-label="Breadcrumb">
+                <a href="{{ route(auth()->user()->routeDashboard()) }}" class="text-muted hover:text-primary">Ruang kerja</a>
+                <x-icon name="chevron-right" class="h-4 w-4 text-muted/60" />
+                <span class="truncate font-semibold text-ink">@yield('title', 'Dashboard')</span>
+            </nav>
         </div>
 
-        {{-- Kanan: notifikasi + pengguna --}}
-        <div class="flex items-center gap-3 sm:gap-4">
-
-            <a href="{{ \Illuminate\Support\Facades\Route::has($routeNotif) ? route($routeNotif) : '#' }}"
-               class="relative inline-flex items-center justify-center p-2 rounded-full text-[#52645B] hover:text-[#176B4D] hover:bg-[#E4F2E8] focus:outline-none transition-colors duration-150"
-               aria-label="Notifikasi">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                </svg>
+        <div class="flex items-center gap-1 sm:gap-3">
+            <a href="{{ route($role . '.notifications') }}"
+               class="relative rounded-full p-2.5 text-muted transition-colors hover:bg-primary-soft hover:text-primary"
+               aria-label="Notifikasi{{ $jumlahNotif ? ', ' . $jumlahNotif . ' belum dibaca' : '' }}">
+                <x-icon name="bell" />
                 @if ($jumlahNotif > 0)
-                    <span class="absolute top-1 right-1 inline-flex items-center justify-center min-w-4 h-4 px-1 text-[10px] font-bold text-white bg-red-500 rounded-full leading-none">
+                    <span class="absolute right-1 top-1 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white ring-2 ring-white">
                         {{ $jumlahNotif > 9 ? '9+' : $jumlahNotif }}
                     </span>
                 @endif
             </a>
 
-            <a href="{{ \Illuminate\Support\Facades\Route::has($routeProfil) ? route($routeProfil) : '#' }}" class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-full bg-[#E4F2E8] border-2 border-[#176B4D] flex items-center justify-center flex-shrink-0">
-                    <span class="text-xs font-bold text-[#176B4D] leading-none">{{ $pengguna?->inisial() ?? 'U' }}</span>
-                </div>
-                <div class="hidden sm:block leading-tight">
-                    <p class="text-sm font-medium text-[#172B23]">{{ $pengguna?->nama ?? 'Pengguna' }}</p>
-                    <p class="text-[11px] text-[#52645B]">{{ $labelPeran[$role] ?? '' }}</p>
-                </div>
-            </a>
+            <span class="hidden h-8 w-px bg-line sm:block"></span>
 
+            <a href="{{ route($routeProfil) }}" class="flex items-center gap-2.5 rounded-xl p-1 pr-2 transition-colors hover:bg-canvas" title="Profil saya">
+                <x-avatar :name="$pengguna?->nama ?? 'Pengguna'" size="sm" />
+                <span class="hidden leading-tight sm:block">
+                    <span class="block max-w-40 truncate text-sm font-semibold text-ink">{{ $pengguna?->nama }}</span>
+                    <span class="block text-xs text-muted">{{ $labelPeran }}</span>
+                </span>
+            </a>
         </div>
     </div>
 </header>
