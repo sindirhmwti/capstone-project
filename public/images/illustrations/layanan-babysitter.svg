@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" role="img" aria-labelledby="judul">
+  <title id="judul">Ilustrasi pengasuh anak bermain dengan bayi</title>
+  <circle cx="160" cy="124" r="98" fill="#FFFFFF" opacity=".55"/>
+  <ellipse cx="160" cy="226" rx="120" ry="8" fill="#123A2E" opacity=".12"/>
+  <!-- Mainan -->
+  <rect x="236" y="186" width="34" height="34" rx="6" fill="#F07F5C"/>
+  <text x="253" y="210" text-anchor="middle" font-family="Plus Jakarta Sans, Segoe UI, sans-serif" font-size="18" font-weight="800" fill="#FFFFFF">A</text>
+  <rect x="270" y="196" width="26" height="26" rx="5" fill="#3BA877"/>
+  <text x="283" y="214" text-anchor="middle" font-family="Plus Jakarta Sans, Segoe UI, sans-serif" font-size="14" font-weight="800" fill="#FFFFFF">B</text>
+  <circle cx="40" cy="204" r="18" fill="#246C54"/>
+  <path d="M22 204h36M40 186v36" stroke="#F5B83D" stroke-width="4"/>
+  <!-- Bintang & awan -->
+  <path d="m250 52 5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2z" fill="#FFFFFF"/>
+  <circle cx="64" cy="58" r="10" fill="#FFFFFF"/>
+  <circle cx="80" cy="52" r="14" fill="#FFFFFF"/>
+  <circle cx="96" cy="60" r="10" fill="#FFFFFF"/>
+  <!-- Pengasuh duduk -->
+  <path d="M104 214c0-18 20-30 52-30s52 12 52 30z" fill="#1A5240"/>
+  <path d="M116 120c0-20 15-34 34-34s34 14 34 34v74h-68z" fill="#F07F5C"/>
+  <rect x="143" y="72" width="14" height="16" rx="4" fill="#8A5A3C"/>
+  <circle cx="150" cy="54" r="24" fill="#8A5A3C"/>
+  <path d="M124 52c0-18 12-30 26-30 16 0 27 12 26 30-6-10-16-14-26-14-12 0-20 6-26 14z" fill="#1F1A17"/>
+  <circle cx="168" cy="30" r="10" fill="#1F1A17"/>
+  <circle cx="142" cy="56" r="2.3" fill="#1F1A17"/>
+  <circle cx="158" cy="56" r="2.3" fill="#1F1A17"/>
+  <path d="M144 66c3 3 9 3 12 0" stroke="#1F1A17" stroke-width="2.3" stroke-linecap="round" fill="none"/>
+  <!-- Bayi di pangkuan -->
+  <path d="M118 140c14 20 50 24 66 8" stroke="#F07F5C" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <ellipse cx="156" cy="156" rx="28" ry="20" fill="#FFF4DC"/>
+  <circle cx="170" cy="132" r="17" fill="#C98B62"/>
+  <path d="M158 124c4-8 16-10 22-2" stroke="#3A2A20" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <circle cx="165" cy="134" r="1.9" fill="#1F1A17"/>
+  <circle cx="176" cy="134" r="1.9" fill="#1F1A17"/>
+  <path d="M167 141c2 2 6 2 8 0" stroke="#1F1A17" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <circle cx="122" cy="144" r="7" fill="#8A5A3C"/>
+  <circle cx="186" cy="150" r="7" fill="#8A5A3C"/>
+  <!-- Hati -->
+  <path d="M214 104c-5-9-19-7-19 3 0 9 19 19 19 19s19-10 19-19c0-10-14-12-19-3z" fill="#F07F5C"/>
+</svg>

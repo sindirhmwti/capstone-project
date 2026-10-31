@@ -1,67 +1,74 @@
+{{-- Topbar dashboard: judul halaman, pencarian (klien & admin), notifikasi, dan menu profil --}}
 @props(['role' => 'admin'])
 
 @php
-    $titles = [
-        'admin'  => 'Admin Panel',
-        'client' => 'Dashboard Klien',
-        'worker' => 'Dashboard Pekerja',
-    ];
-    $labelPeran = [
-        'admin'  => 'Admin',
-        'client' => 'Klien',
-        'worker' => 'Calon Pekerja',
-    ];
-    $pageTitle = $titles[$role] ?? 'Dashboard';
+    $labelPeran = ['admin' => 'Admin', 'client' => 'Klien', 'worker' => 'Calon Pekerja'][$role] ?? '';
     $pengguna = auth()->user();
     $jumlahNotif = $pengguna?->jumlahNotifikasiBelumDibaca() ?? 0;
-    $routeNotif = $role . '.notifications';
-    $routeProfil = $role . '.profile';
+    $routeProfil = $role === 'worker' ? 'worker.profile.edit' : $role . '.profile';
+    // Pencarian cepat diarahkan ke halaman pencarian yang sudah ada
+    $cari = ['client' => [route('client.workers'), 'Cari pekerja berdasarkan nama atau lokasi...'], 'admin' => [route('admin.workers'), 'Cari akun pekerja...']][$role] ?? null;
 @endphp
 
-<header class="sticky top-0 z-40 h-16 w-full bg-white border-b border-gray-200 shadow-sm flex items-center print:hidden">
-    <div class="flex items-center justify-between w-full px-4 sm:px-6">
+<header class="sticky top-0 z-30 border-b border-line bg-white/95 backdrop-blur print:hidden">
+    <div class="flex h-20 items-center gap-3 px-4 sm:px-6 lg:px-10">
+        <button type="button" class="-ml-1 rounded-xl p-2.5 text-ink hover:bg-canvas lg:hidden" data-sidebar-open aria-label="Buka menu" aria-controls="sidebar">
+            <x-icon name="menu" class="h-6 w-6" />
+        </button>
 
-        {{-- Kiri: tombol sidebar + judul --}}
-        <div class="flex items-center gap-3">
-            <button id="sidebar-toggle"
-                    type="button"
-                    class="inline-flex items-center justify-center p-2 rounded-md text-[#52645B] hover:text-[#176B4D] hover:bg-[#E4F2E8] focus:outline-none transition-colors duration-150 lg:hidden"
-                    aria-label="Buka sidebar">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-            </button>
-
-            <h1 class="text-base sm:text-lg font-semibold text-[#172B23]">@yield('title', $pageTitle)</h1>
+        <div class="min-w-0 flex-1">
+            <nav class="hidden items-center gap-1.5 text-sm text-muted sm:flex" aria-label="Breadcrumb">
+                <a href="{{ route($pengguna->routeDashboard()) }}" class="hover:text-primary">{{ $labelPeran }}</a>
+                <x-icon name="chevron-right" class="h-4 w-4 text-muted/50" />
+                <span class="truncate">@yield('title', 'Dashboard')</span>
+            </nav>
+            <p class="truncate text-lg font-extrabold text-ink sm:text-xl">@yield('title', 'Dashboard')</p>
         </div>
 
-        {{-- Kanan: notifikasi + pengguna --}}
-        <div class="flex items-center gap-3 sm:gap-4">
+        @if ($cari)
+            <form action="{{ $cari[0] }}" method="GET" class="hidden w-full max-w-sm xl:block" role="search">
+                <label class="flex items-center gap-2.5 rounded-full border border-line bg-canvas px-4 transition focus-within:border-primary focus-within:bg-white focus-within:ring-4 focus-within:ring-primary/15">
+                    <x-icon name="search" class="h-5 w-5 text-muted" />
+                    <span class="sr-only">Pencarian</span>
+                    <input type="search" name="cari" value="{{ request('cari') }}" placeholder="{{ $cari[1] }}" class="w-full bg-transparent py-3 text-[15px] outline-none placeholder:text-gray-400">
+                </label>
+            </form>
+        @endif
 
-            <a href="{{ \Illuminate\Support\Facades\Route::has($routeNotif) ? route($routeNotif) : '#' }}"
-               class="relative inline-flex items-center justify-center p-2 rounded-full text-[#52645B] hover:text-[#176B4D] hover:bg-[#E4F2E8] focus:outline-none transition-colors duration-150"
-               aria-label="Notifikasi">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                </svg>
+        <div class="flex items-center gap-1 sm:gap-2">
+            <a href="{{ route($role . '.notifications') }}"
+               class="relative flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors hover:bg-primary-soft hover:text-primary"
+               aria-label="Notifikasi{{ $jumlahNotif ? ', ' . $jumlahNotif . ' belum dibaca' : '' }}" data-tip="Notifikasi">
+                <x-icon name="bell" class="h-6 w-6" />
                 @if ($jumlahNotif > 0)
-                    <span class="absolute top-1 right-1 inline-flex items-center justify-center min-w-4 h-4 px-1 text-[10px] font-bold text-white bg-red-500 rounded-full leading-none">
+                    <span class="absolute right-1 top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-bold text-white ring-2 ring-white animate-denyut">
                         {{ $jumlahNotif > 9 ? '9+' : $jumlahNotif }}
                     </span>
                 @endif
             </a>
 
-            <a href="{{ \Illuminate\Support\Facades\Route::has($routeProfil) ? route($routeProfil) : '#' }}" class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-full bg-[#E4F2E8] border-2 border-[#176B4D] flex items-center justify-center flex-shrink-0">
-                    <span class="text-xs font-bold text-[#176B4D] leading-none">{{ $pengguna?->inisial() ?? 'U' }}</span>
+            <details class="group relative">
+                <summary class="flex cursor-pointer items-center gap-2.5 rounded-full p-1 pr-2 transition-colors hover:bg-canvas sm:pr-3" aria-label="Menu profil">
+                    <x-avatar :name="$pengguna?->nama ?? 'Pengguna'" size="md" />
+                    <span class="hidden leading-tight md:block">
+                        <span class="block max-w-40 truncate text-[15px] font-bold text-ink">{{ $pengguna?->nama }}</span>
+                        <span class="block text-xs font-medium text-muted">{{ $labelPeran }}</span>
+                    </span>
+                    <x-icon name="chevron-down" class="hidden h-4 w-4 text-muted transition-transform group-open:rotate-180 md:block" />
+                </summary>
+                <div class="animate-fade-up absolute right-0 mt-2 w-64 overflow-hidden rounded-2xl border border-line bg-white p-2 shadow-lift">
+                    <div class="border-b border-line px-3 pb-3 pt-2">
+                        <p class="truncate font-bold text-ink">{{ $pengguna?->nama }}</p>
+                        <p class="truncate text-sm text-muted">{{ $pengguna?->email }}</p>
+                    </div>
+                    <a href="{{ route($routeProfil) }}" class="mt-1 flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium text-ink hover:bg-canvas"><x-icon name="user" class="h-5 w-5 text-muted" /> Edit profil</a>
+                    <a href="{{ route($role . '.notifications') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium text-ink hover:bg-canvas"><x-icon name="bell" class="h-5 w-5 text-muted" /> Notifikasi</a>
+                    <form method="POST" action="{{ route('logout') }}" data-confirm="Keluar dari akun Anda?">
+                        @csrf
+                        <button type="submit" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-semibold text-red-600 hover:bg-red-50"><x-icon name="log-out" class="h-5 w-5" /> Keluar</button>
+                    </form>
                 </div>
-                <div class="hidden sm:block leading-tight">
-                    <p class="text-sm font-medium text-[#172B23]">{{ $pengguna?->nama ?? 'Pengguna' }}</p>
-                    <p class="text-[11px] text-[#52645B]">{{ $labelPeran[$role] ?? '' }}</p>
-                </div>
-            </a>
-
+            </details>
         </div>
     </div>
 </header>

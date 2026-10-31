@@ -3,27 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Penyaluran {{ $labelPeriode }} — PT Shaka Abadi Nusantara</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo-icon.svg') }}">
     {{-- Halaman cetak berdiri sendiri (tanpa Vite) agar tetap rapi saat disimpan sebagai PDF --}}
     <style>
         @page { size: A4; margin: 18mm 15mm; }
         * { box-sizing: border-box; }
-        body { font-family: Arial, Helvetica, sans-serif; color: #172B23; font-size: 12px; margin: 0; }
-        .kop { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid #176B4D; padding-bottom: 10px; }
-        .kop h1 { margin: 0; font-size: 18px; color: #176B4D; }
-        .kop p { margin: 2px 0 0; color: #52645B; }
+        body { font-family: Arial, Helvetica, sans-serif; color: #13201B; font-size: 12px; margin: 0; }
+        .kop { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid #246C54; padding-bottom: 10px; }
+        .kop h1 { margin: 0; font-size: 18px; color: #246C54; }
+        .kop p { margin: 2px 0 0; color: #4D5C55; }
         h2 { font-size: 15px; margin: 18px 0 4px; text-align: center; }
-        .sub { text-align: center; color: #52645B; margin: 0 0 14px; }
+        .sub { text-align: center; color: #4D5C55; margin: 0 0 14px; }
         .ringkasan { display: flex; gap: 8px; margin-bottom: 14px; }
         .ringkasan div { flex: 1; border: 1px solid #dfe7e2; border-radius: 6px; padding: 8px; }
         .ringkasan b { display: block; font-size: 16px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { border: 1px solid #cfd8d3; padding: 6px 8px; text-align: left; }
-        th { background: #E4F2E8; }
+        th { background: #E8F3EE; }
         .ttd { margin-top: 40px; display: flex; justify-content: flex-end; text-align: center; }
         .ttd div { width: 220px; }
         .aksi { text-align: right; margin-bottom: 12px; }
-        .aksi button { background: #176B4D; color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
-        @media print { .aksi { display: none; } }
+        .aksi button { background: #246C54; color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+        .aksi button:hover { background: #1A5240; }
+        /* Di layar: tampil seperti lembar kertas A4 di atas latar abu-abu */
+        @media screen {
+            html { background: #E8EDEA; }
+            body { max-width: 210mm; min-height: 297mm; margin: 24px auto; padding: 18mm 15mm; background: #fff; box-shadow: 0 10px 40px -12px rgba(18, 32, 26, .25); border-radius: 8px; }
+        }
+        @media print { .aksi { display: none; } * { animation: none !important; transition: none !important; } }
     </style>
 </head>
 <body>
@@ -33,6 +40,7 @@
 
     <div class="kop">
         <div>
+            <img src="{{ asset('images/logo-temukerja.svg') }}" alt="temukerja." style="height:34px;margin-bottom:6px">
             <h1>PT Shaka Abadi Nusantara</h1>
             <p>Penyedia &amp; penyalur tenaga kerja domestik — ART, Baby Sitter, Perawat Lansia</p>
             <p>Komplek P&amp;K Jl. Melur No. 183, Cipondoh Indah, Kota Tangerang, Banten</p>

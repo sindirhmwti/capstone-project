@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320" role="img" aria-labelledby="judul">
+  <title id="judul">Ilustrasi profil pekerja yang terverifikasi dan cocok dengan klien</title>
+  <circle cx="200" cy="170" r="140" fill="#FFFFFF" opacity=".08"/>
+  <circle cx="330" cy="60" r="22" fill="#B9DECF" opacity=".35"/>
+  <circle cx="60" cy="250" r="14" fill="#B9DECF" opacity=".35"/>
+
+  <!-- Kartu profil belakang -->
+  <rect x="70" y="70" width="170" height="200" rx="18" fill="#FFFFFF" opacity=".18" transform="rotate(-8 155 170)"/>
+
+  <!-- Kartu profil utama -->
+  <rect x="120" y="58" width="180" height="214" rx="20" fill="#FFFFFF"/>
+  <rect x="120" y="58" width="180" height="62" rx="20" fill="#E8F3EE"/>
+  <rect x="120" y="100" width="180" height="20" fill="#E8F3EE"/>
+  <circle cx="210" cy="118" r="30" fill="#E9B48C" stroke="#FFFFFF" stroke-width="5"/>
+  <path d="M182 116c0-17 12-28 28-28s28 11 28 26c-8-7-19-10-29-10-10 0-19 5-27 12z" fill="#2E2A28"/>
+  <circle cx="200" cy="121" r="2.4" fill="#2E2A28"/>
+  <circle cx="220" cy="121" r="2.4" fill="#2E2A28"/>
+  <path d="M203 131c4 3 10 3 14 0" stroke="#B8775A" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <rect x="162" y="164" width="96" height="10" rx="5" fill="#13201B" opacity=".85"/>
+  <rect x="180" y="182" width="60" height="8" rx="4" fill="#B9DECF"/>
+  <rect x="146" y="206" width="56" height="20" rx="10" fill="#E8F3EE"/>
+  <rect x="208" y="206" width="64" height="20" rx="10" fill="#E8F3EE"/>
+  <rect x="146" y="240" width="128" height="16" rx="8" fill="#246C54"/>
+
+  <!-- Lencana centang -->
+  <circle cx="290" cy="76" r="24" fill="#3BA877" stroke="#FFFFFF" stroke-width="5"/>
+  <path d="m279 77 8 8 14-15" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Hati (kecocokan) -->
+  <g transform="translate(64 120)">
+    <rect width="76" height="54" rx="14" fill="#FFFFFF"/>
+    <path d="M38 40c-12-8-20-14-20-22a9 9 0 0 1 20-5 9 9 0 0 1 20 5c0 8-8 14-20 22z" fill="#E8735A"/>
+  </g>
+  <!-- Perisai (aman) -->
+  <g transform="translate(286 176)">
+    <rect width="64" height="64" rx="16" fill="#FFFFFF"/>
+    <path d="M32 14c6 5 12 7 18 7v12c0 10-8 16-18 19-10-3-18-9-18-19V21c6 0 12-2 18-7z" fill="#246C54"/>
+    <path d="m25 33 5 5 10-10" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

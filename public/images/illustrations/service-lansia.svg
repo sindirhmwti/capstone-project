@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" role="img" aria-label="Ilustrasi Perawat Lansia">
+  <circle cx="80" cy="64" r="52" fill="#EEF0FB"/>
+  <!-- Lansia -->
+  <rect x="58" y="88" width="9" height="26" rx="4" fill="#4D5C55"/>
+  <rect x="70" y="88" width="9" height="26" rx="4" fill="#4D5C55"/>
+  <path d="M52 66c0-12 8-20 17-20s17 8 17 20v26H52z" fill="#8C9BD6"/>
+  <circle cx="69" cy="34" r="12" fill="#E2B58F"/>
+  <path d="M57 32c0-8 6-13 12-13s12 5 12 12c-4-3-8-4-12-4s-8 2-12 5z" fill="#E5E7EB"/>
+  <path d="M90 64l4 50" stroke="#8D5A3E" stroke-width="4" stroke-linecap="round"/>
+  <path d="M84 64c4-4 10-4 12 0" stroke="#8D5A3E" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Perawat -->
+  <rect x="104" y="88" width="9" height="26" rx="4" fill="#1A5240"/>
+  <rect x="116" y="88" width="9" height="26" rx="4" fill="#1A5240"/>
+  <path d="M98 66c0-12 8-20 17-20s17 8 17 20v26H98z" fill="#3BA877"/>
+  <rect x="110" y="56" width="10" height="10" rx="2" fill="#FFFFFF"/>
+  <path d="M115 58v6M112 61h6" stroke="#E8735A" stroke-width="2"/>
+  <circle cx="115" cy="34" r="12" fill="#C98A64"/>
+  <path d="M103 32c0-8 6-13 12-13s12 5 12 12c-4-3-8-4-12-4s-8 2-12 5z" fill="#2E2A28"/>
+  <path d="M86 64c4 2 8 2 12 0" stroke="#3BA877" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <!-- Hati -->
+  <path d="M92 26c-5-4-8-6-8-9a3.6 3.6 0 0 1 8-2 3.6 3.6 0 0 1 8 2c0 3-3 5-8 9z" fill="#E8735A"/>
+</svg>

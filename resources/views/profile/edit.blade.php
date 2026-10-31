@@ -2,50 +2,46 @@
 @section('title', 'Edit Profil')
 @section('content')
 
-@php $input = 'w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-white text-sm text-[#172B23] focus:outline-none focus:ring-2 focus:ring-[#176B4D] focus:border-transparent'; @endphp
+@include('components.page-header', ['crumb' => $crumb . ' / Edit Profil', 'title' => 'Edit Profil', 'subtitle' => 'Perbarui informasi akun Anda. Kolom bertanda * wajib diisi.'])
 
-@include('components.page-header', ['crumb' => $crumb . ' / Edit Profil', 'title' => 'Edit Profil'])
-
-<form method="POST" action="{{ route($routeUpdate) }}" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6 max-w-4xl" novalidate>
+<form method="POST" action="{{ route($routeUpdate) }}" class="grid gap-6 xl:grid-cols-3" novalidate>
     @csrf
     @method('PUT')
 
-    <div class="flex items-center gap-4 pb-5 border-b border-gray-100">
-        <div class="w-12 h-12 rounded-full bg-[#E4F2E8] flex items-center justify-center font-bold text-[#176B4D]">{{ $pengguna->inisial() }}</div>
-        <div>
-            <p class="font-semibold text-[#172B23]">{{ $pengguna->isAdmin() ? 'Informasi admin' : 'Informasi pribadi' }}</p>
-            <p class="text-xs text-[#52645B]">Lengkapi data Anda dengan informasi yang sesuai.</p>
-        </div>
+    <div class="space-y-6 xl:col-span-2">
+        <section class="card reveal">
+            <div class="card-head">
+                <h2 class="card-title flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft text-primary"><x-icon name="user" /></span> {{ $pengguna->isAdmin() ? 'Informasi admin' : 'Informasi pribadi' }}</h2>
+            </div>
+            <div class="card-body grid gap-5 md:grid-cols-2">
+                <x-field name="nama" label="Nama lengkap" icon="user" required :value="$pengguna->nama" autocomplete="name" />
+                <x-field name="email" type="email" label="Email" icon="mail" required :value="$pengguna->email" autocomplete="email" />
+                <x-field name="no_telepon" type="tel" label="Nomor telepon" icon="phone" required :value="$pengguna->no_telepon" autocomplete="tel" />
+            </div>
+        </section>
+
+        <section class="card card-body reveal [&>div]:border-t-0 [&>div]:pt-0">
+            @include('components.form-kata-sandi')
+        </section>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div>
-            <label class="block text-sm font-medium mb-1.5" for="nama">Nama lengkap <span class="text-red-500">*</span></label>
-            <input id="nama" name="nama" value="{{ old('nama', $pengguna->nama) }}" class="{{ $input }}">
-            @error('nama') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+    <aside class="space-y-6 xl:sticky xl:top-28 xl:h-fit">
+        <div class="card reveal overflow-hidden">
+            <div class="bg-gradient-to-br from-primary-dark to-primary p-6 text-center text-white">
+                <x-avatar :name="$pengguna->nama" size="xl" class="ring-4 ring-white/30" />
+                <p class="mt-3 text-lg font-extrabold">{{ $pengguna->nama }}</p>
+                <p class="text-sm text-white/75">{{ $pengguna->isAdmin() ? 'Admin' : 'Klien' }}</p>
+            </div>
+            <div class="space-y-3 p-5 text-[15px] text-muted">
+                <p class="flex items-center gap-2"><x-icon name="mail" class="h-5 w-5 text-primary" /> <span class="truncate">{{ $pengguna->email }}</span></p>
+                <p class="flex items-center gap-2"><x-icon name="calendar" class="h-5 w-5 text-primary" /> Terdaftar sejak {{ $pengguna->tanggal_dibuat?->translatedFormat('d F Y') }}</p>
+            </div>
         </div>
-        <div>
-            <label class="block text-sm font-medium mb-1.5" for="email">Email <span class="text-red-500">*</span></label>
-            <input id="email" type="email" name="email" value="{{ old('email', $pengguna->email) }}" class="{{ $input }}">
-            @error('email') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+        <div class="card card-body reveal space-y-3">
+            <button type="submit" class="btn-primary btn-lg w-full"><x-icon name="check" class="h-5 w-5" /> Simpan Perubahan</button>
+            <a href="{{ route($pengguna->routeDashboard()) }}" class="btn-secondary w-full">Batal</a>
         </div>
-        <div>
-            <label class="block text-sm font-medium mb-1.5" for="no_telepon">Nomor telepon <span class="text-red-500">*</span></label>
-            <input id="no_telepon" name="no_telepon" value="{{ old('no_telepon', $pengguna->no_telepon) }}" class="{{ $input }}">
-            @error('no_telepon') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1.5">Jenis akun</label>
-            <input value="{{ $pengguna->isAdmin() ? 'Admin' : 'Klien' }} · terdaftar {{ $pengguna->tanggal_dibuat?->translatedFormat('d F Y') }}" disabled class="{{ $input }} bg-gray-50 text-[#52645B]">
-        </div>
-    </div>
-
-    @include('components.form-kata-sandi')
-
-    <div class="flex justify-end gap-3">
-        <a href="{{ route($pengguna->routeDashboard()) }}" class="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-[#52645B] hover:bg-gray-50">Batal</a>
-        <button type="submit" class="px-5 py-2.5 bg-[#176B4D] text-white text-sm font-semibold rounded-xl hover:bg-[#104C38]">Simpan Perubahan</button>
-    </div>
+    </aside>
 </form>
 
 @endsection
