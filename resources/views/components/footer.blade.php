@@ -1,4 +1,4 @@
-<footer class="bg-[#104C38] text-white">
+<footer id="hubungi-kami" class="bg-[#104C38] text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
@@ -25,17 +25,17 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/katalog') }}" class="text-sm text-gray-300 hover:text-white hover:underline transition-colors duration-150">
+                        <a href="{{ route('workers.index') }}" class="text-sm text-gray-300 hover:text-white hover:underline transition-colors duration-150">
                             Katalog Pekerja
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/tentang-kami') }}" class="text-sm text-gray-300 hover:text-white hover:underline transition-colors duration-150">
+                        <a href="{{ url('/#tentang-kami') }}" class="text-sm text-gray-300 hover:text-white hover:underline transition-colors duration-150">
                             Tentang Kami
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/cara-pemesanan') }}" class="text-sm text-gray-300 hover:text-white hover:underline transition-colors duration-150">
+                        <a href="{{ url('/#cara-pemesanan') }}" class="text-sm text-gray-300 hover:text-white hover:underline transition-colors duration-150">
                             Cara Pemesanan
                         </a>
                     </li>
@@ -47,23 +47,23 @@
                 <h3 class="text-sm font-semibold text-white uppercase tracking-wider">Informasi</h3>
                 <ul class="space-y-2">
                     <li>
-                        <a href="{{ url('/tentang-kami') }}" class="text-sm text-gray-300 hover:text-white hover:underline transition-colors duration-150">
+                        <a href="{{ url('/#tentang-kami') }}" class="text-sm text-gray-300 hover:text-white hover:underline transition-colors duration-150">
                             Tentang Kami
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/cara-pemesanan') }}" class="text-sm text-gray-300 hover:text-white hover:underline transition-colors duration-150">
+                        <a href="{{ url('/#cara-pemesanan') }}" class="text-sm text-gray-300 hover:text-white hover:underline transition-colors duration-150">
                             Cara Pemesanan
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/kebijakan-privasi') }}" class="text-sm text-gray-300 hover:text-white hover:underline transition-colors duration-150">
-                            Kebijakan Privasi
+                        <a href="{{ url('/#layanan') }}" class="text-sm text-gray-300 hover:text-white hover:underline transition-colors duration-150">
+                            Layanan Kami
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/syarat-ketentuan') }}" class="text-sm text-gray-300 hover:text-white hover:underline transition-colors duration-150">
-                            Syarat &amp; Ketentuan
+                        <a href="{{ url('/#pekerja-unggulan') }}" class="text-sm text-gray-300 hover:text-white hover:underline transition-colors duration-150">
+                            Pekerja Unggulan
                         </a>
                     </li>
                 </ul>

@@ -3,7 +3,6 @@ import './bootstrap';
 /**
  * Temukerja — Global JavaScript
  * Sidebar toggle, mobile menu, notifications, etc.
- * TODO: Initialize Supabase JS client here when integrating auth.
  */
 
 // ─── Sidebar Toggle ───────────────────────────────────────────────
@@ -76,12 +75,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     });
 });
-
-// ─── Supabase Auth Placeholder ────────────────────────────────────
-// TODO: Initialize Supabase client
-// import { createClient } from '@supabase/supabase-js'
-// const supabase = createClient(
-//     import.meta.env.VITE_SUPABASE_URL,
-//     import.meta.env.VITE_SUPABASE_ANON_KEY
-// )
-// window.supabase = supabase;

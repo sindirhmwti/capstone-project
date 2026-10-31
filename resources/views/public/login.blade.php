@@ -51,7 +51,7 @@
         </div>
 
         <div class="relative z-10 text-white/40 text-xs">
-            &copy; {{ date('Y') }} Temukerja. All rights reserved.
+            &copy; {{ date('Y') }} Temukerja &mdash; PT Shaka Abadi Nusantara.
         </div>
     </div>
 
@@ -66,9 +66,19 @@
             </div>
 
             <h1 class="text-3xl font-bold text-[#172B23] mb-2">Selamat Datang Kembali</h1>
-            <p class="text-[#52645B] mb-8">Masuk ke akun Temukerja Anda</p>
+            <p class="text-[#52645B] mb-8">Masuk ke akun Temukerja Anda (Klien, Pekerja, atau Admin)</p>
 
-            {{-- Flash error --}}
+            {{-- Pesan sukses / info / error --}}
+            @if (session('success'))
+                <div class="bg-[#E4F2E8] border border-[#176B4D]/20 text-[#104C38] rounded-xl p-4 mb-6 text-sm">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if (session('info'))
+                <div class="bg-blue-50 border border-blue-200 text-blue-700 rounded-xl p-4 mb-6 text-sm">
+                    {{ session('info') }}
+                </div>
+            @endif
             @if (session('error'))
                 <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 mb-6 text-sm">
                     {{ session('error') }}
@@ -99,7 +109,6 @@
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label for="password" class="block text-sm font-medium text-[#172B23]">Kata Sandi</label>
-                        <a href="#" class="text-sm text-[#176B4D] hover:text-[#104C38] font-medium">Lupa kata sandi?</a>
                     </div>
                     <div class="relative">
                         <input

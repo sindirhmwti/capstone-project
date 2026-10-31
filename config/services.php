@@ -35,18 +35,4 @@ return [
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Supabase Configuration
-    |--------------------------------------------------------------------------
-    | Used by SupabaseService for Auth, Database (PostgREST), and Storage.
-    | Set these values in your .env file.
-    */
-    'supabase' => [
-        'url'              => env('SUPABASE_URL', ''),
-        'anon_key'         => env('SUPABASE_ANON_KEY', ''),
-        'service_role_key' => env('SUPABASE_SERVICE_ROLE_KEY', ''),
-        'storage_bucket'   => env('SUPABASE_STORAGE_BUCKET', 'temukerja-uploads'),
-    ],
-
 ];

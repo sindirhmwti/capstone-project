@@ -3,38 +3,45 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProfilPekerja;
+use App\Services\RekomendasiPekerja;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    /**
-     * Show the client dashboard.
-     * TODO: Fetch real data from Supabase PostgreSQL.
-     */
-    public function index()
+    /** Beranda klien: ringkasan aktivitas dan rekomendasi pekerja. */
+    public function index(Request $request, RekomendasiPekerja $rekomendasi)
     {
-        // Dummy session data — replace with Supabase Auth session
-        $user = [
-            'name'   => 'Budi Santoso',
-            'email'  => 'budi@example.com',
-            'avatar' => null,
-        ];
+        $pengguna = $request->user();
 
         $stats = [
-            'favorites'     => 5,
-            'active_orders' => 2,
-            'history'       => 8,
-            'notifications' => 3,
+            'favorites' => $pengguna->favorit()->count(),
+            'active_orders' => $pengguna->pemesanan()->whereIn('status_pemesanan', ['menunggu', 'diproses', 'disetujui'])->count(),
+            'history' => $pengguna->pemesanan()->count(),
+            'notifications' => $pengguna->jumlahNotifikasiBelumDibaca(),
         ];
 
-        // Dummy recommended workers
-        $recommendedWorkers = [
-            ['name' => 'Siti Rahayu',   'category' => 'ART',            'rating' => 4.8, 'location' => 'Jakarta Selatan', 'avatar' => null],
-            ['name' => 'Dewi Lestari',  'category' => 'Baby Sitter',    'rating' => 4.9, 'location' => 'Bandung',         'avatar' => null],
-            ['name' => 'Nurul Aini',    'category' => 'Perawat Lansia', 'rating' => 4.7, 'location' => 'Surabaya',        'avatar' => null],
-            ['name' => 'Rina Marlina',  'category' => 'Baby Sitter',    'rating' => 4.6, 'location' => 'Jakarta Barat',   'avatar' => null],
-        ];
+        // Dasar rekomendasi: kriteria pencarian terakhir, atau kriteria pada pesanan terakhir
+        $idKriteria = session('kriteria_dicari', []);
+        if (! $idKriteria) {
+            $pesananTerakhir = $pengguna->pemesanan()->with('kriteria')->latest('tanggal_pemesanan')->first();
+            $idKriteria = $pesananTerakhir?->kriteria->pluck('id_kriteria')->all() ?? [];
+        }
 
-        return view('client.dashboard', compact('user', 'stats', 'recommendedWorkers'));
+        $kandidat = ProfilPekerja::tampilDiKatalog()->with(['pengguna', 'kriteria'])->get();
+        $rekomendasiPekerja = $idKriteria
+            ? $rekomendasi->rekomendasikan($idKriteria, $kandidat)->take(3)
+            : $kandidat->sortByDesc('lama_pengalaman')->take(3)->values()->map(fn ($p) => ['profil' => $p, 'skor' => null]);
+
+        $pesananTerbaru = $pengguna->pemesanan()->with('profilPekerja.pengguna')->latest('tanggal_pemesanan')->take(3)->get();
+
+        return view('client.dashboard', [
+            'pengguna' => $pengguna,
+            'stats' => $stats,
+            'rekomendasiPekerja' => $rekomendasiPekerja,
+            'berdasarkanKriteria' => (bool) $idKriteria,
+            'idFavorit' => $pengguna->favorit()->pluck('id_pekerja')->all(),
+            'pesananTerbaru' => $pesananTerbaru,
+        ]);
     }
 }
-
