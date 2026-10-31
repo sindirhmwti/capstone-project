@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420" role="img" aria-labelledby="judul">
+  <title id="judul">Ilustrasi calon pekerja dengan profil dan dokumen terverifikasi</title>
+  <rect x="20" y="30" width="480" height="360" rx="36" fill="#FFF4DC"/>
+  <circle cx="86" cy="96" r="30" fill="#FFFFFF" opacity=".7"/>
+  <circle cx="452" cy="330" r="24" fill="#FFFFFF" opacity=".7"/>
+  <!-- Kartu profil besar -->
+  <rect x="236" y="70" width="230" height="270" rx="26" fill="#FFFFFF"/>
+  <rect x="236" y="70" width="230" height="74" rx="26" fill="#246C54"/>
+  <rect x="236" y="118" width="230" height="26" fill="#246C54"/>
+  <circle cx="300" cy="146" r="34" fill="#E8F3EE" stroke="#FFFFFF" stroke-width="6"/>
+  <circle cx="300" cy="140" r="13" fill="#3BA877"/>
+  <path d="M278 168c4-14 14-20 22-20s18 6 22 20" fill="#3BA877"/>
+  <rect x="346" y="152" width="96" height="10" rx="5" fill="#12201A"/>
+  <rect x="346" y="170" width="64" height="8" rx="4" fill="#B9DECF"/>
+  <rect x="262" y="200" width="70" height="24" rx="12" fill="#E8F3EE"/>
+  <rect x="340" y="200" width="88" height="24" rx="12" fill="#FFF4DC"/>
+  <rect x="262" y="232" width="96" height="24" rx="12" fill="#E8F3EE"/>
+  <rect x="262" y="276" width="178" height="10" rx="5" fill="#E1E8E4"/>
+  <rect x="262" y="276" width="134" height="10" rx="5" fill="#3BA877"/>
+  <rect x="262" y="300" width="120" height="8" rx="4" fill="#E1E8E4"/>
+  <!-- Lencana verifikasi -->
+  <circle cx="452" cy="90" r="30" fill="#F5B83D"/>
+  <path d="m438 90 10 10 18-20" stroke="#FFFFFF" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Dokumen -->
+  <g transform="rotate(-8 170 300)">
+    <rect x="120" y="250" width="110" height="80" rx="12" fill="#FFFFFF" stroke="#E1E8E4" stroke-width="3"/>
+    <rect x="134" y="266" width="30" height="36" rx="6" fill="#B9DECF"/>
+    <rect x="172" y="268" width="44" height="7" rx="3.5" fill="#246C54"/>
+    <rect x="172" y="282" width="36" height="6" rx="3" fill="#E1E8E4"/>
+    <rect x="172" y="294" width="40" height="6" rx="3" fill="#E1E8E4"/>
+    <rect x="134" y="310" width="82" height="6" rx="3" fill="#E1E8E4"/>
+  </g>
+  <!-- Pekerja -->
+  <ellipse cx="160" cy="376" rx="60" ry="8" fill="#12201A" opacity=".12"/>
+  <rect x="138" y="292" width="17" height="82" rx="8.5" fill="#123A2E"/>
+  <rect x="163" y="292" width="17" height="82" rx="8.5" fill="#123A2E"/>
+  <path d="M114 216c0-24 20-42 45-42s45 18 45 42v86h-90z" fill="#3BA877"/>
+  <path d="M134 220h50v68a8 8 0 0 1-8 8h-34a8 8 0 0 1-8-8z" fill="#FFFFFF"/>
+  <rect x="146" y="234" width="26" height="18" rx="4" fill="#E8F3EE"/>
+  <rect x="98" y="210" width="19" height="70" rx="9.5" fill="#3BA877"/>
+  <path d="M198 220c18 4 30 0 40-12" stroke="#3BA877" stroke-width="19" stroke-linecap="round" fill="none"/>
+  <circle cx="107" cy="282" r="9.5" fill="#C98B62"/>
+  <circle cx="242" cy="204" r="9.5" fill="#C98B62"/>
+  <rect x="151" y="160" width="16" height="18" rx="5" fill="#C98B62"/>
+  <circle cx="159" cy="138" r="29" fill="#C98B62"/>
+  <path d="M128 134c0-22 14-34 31-34s31 12 31 32c-6-10-22-14-32-14-12 0-22 6-30 16z" fill="#1F1A17"/>
+  <path d="M190 130c6 4 10 10 10 18" stroke="#1F1A17" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <circle cx="150" cy="140" r="2.7" fill="#1F1A17"/>
+  <circle cx="169" cy="140" r="2.7" fill="#1F1A17"/>
+  <path d="M152 153c4 4 10 4 14 0" stroke="#1F1A17" stroke-width="2.7" stroke-linecap="round" fill="none"/>
+  <circle cx="145" cy="149" r="4" fill="#F07F5C" opacity=".35"/>
+  <circle cx="174" cy="149" r="4" fill="#F07F5C" opacity=".35"/>
+</svg>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 240" role="img" aria-labelledby="judul">
+  <title id="judul">Ilustrasi pengguna mengelola aktivitas di dashboard</title>
+  <circle cx="160" cy="124" r="100" fill="#FFFFFF" opacity=".1"/>
+  <circle cx="160" cy="124" r="72" fill="#FFFFFF" opacity=".08"/>
+  <ellipse cx="150" cy="226" rx="120" ry="8" fill="#0B261E" opacity=".3"/>
+  <!-- Papan tugas -->
+  <rect x="150" y="34" width="124" height="150" rx="16" fill="#FFFFFF"/>
+  <rect x="188" y="26" width="48" height="16" rx="8" fill="#F5B83D"/>
+  <circle cx="172" cy="74" r="9" fill="#3BA877"/>
+  <path d="m168 74 3 3 6-6" stroke="#FFFFFF" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="188" y="68" width="68" height="7" rx="3.5" fill="#B9DECF"/>
+  <rect x="188" y="80" width="44" height="6" rx="3" fill="#E1E8E4"/>
+  <circle cx="172" cy="110" r="9" fill="#3BA877"/>
+  <path d="m168 110 3 3 6-6" stroke="#FFFFFF" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="188" y="104" width="60" height="7" rx="3.5" fill="#B9DECF"/>
+  <rect x="188" y="116" width="50" height="6" rx="3" fill="#E1E8E4"/>
+  <circle cx="172" cy="146" r="9" fill="none" stroke="#F5B83D" stroke-width="3"/>
+  <rect x="188" y="140" width="64" height="7" rx="3.5" fill="#FFF4DC"/>
+  <rect x="188" y="152" width="40" height="6" rx="3" fill="#E1E8E4"/>
+  <!-- Orang -->
+  <rect x="84" y="160" width="15" height="64" rx="7.5" fill="#0B261E"/>
+  <rect x="104" y="160" width="15" height="64" rx="7.5" fill="#0B261E"/>
+  <path d="M68 108c0-20 15-34 34-34s34 14 34 34v62H68z" fill="#F5B83D"/>
+  <path d="M70 112c-8 18-6 34 4 46" stroke="#F5B83D" stroke-width="15" stroke-linecap="round" fill="none"/>
+  <path d="M132 110c10 2 18-2 24-10" stroke="#F5B83D" stroke-width="15" stroke-linecap="round" fill="none"/>
+  <circle cx="76" cy="160" r="7.5" fill="#C98B62"/>
+  <circle cx="158" cy="98" r="7.5" fill="#C98B62"/>
+  <rect x="95" y="60" width="14" height="16" rx="4" fill="#C98B62"/>
+  <circle cx="102" cy="42" r="24" fill="#C98B62"/>
+  <path d="M78 40c0-18 12-30 24-30 15 0 26 11 25 28-8-8-18-12-26-12s-16 6-23 14z" fill="#1F1A17"/>
+  <circle cx="94" cy="44" r="2.3" fill="#1F1A17"/>
+  <circle cx="110" cy="44" r="2.3" fill="#1F1A17"/>
+  <path d="M96 54c3 3 9 3 12 0" stroke="#1F1A17" stroke-width="2.3" stroke-linecap="round" fill="none"/>
+  <!-- Hiasan -->
+  <path d="M38 64l8 0M42 60l0 8" stroke="#F5B83D" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="40" cy="190" r="6" fill="#B9DECF"/>
+  <path d="m280 196 4 8 9 1-6 6 1 9-8-4-8 4 1-9-6-6 9-1z" fill="#F5B83D"/>
+</svg>

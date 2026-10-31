@@ -2,26 +2,26 @@
 @section('title', 'Dashboard Admin')
 @section('content')
 
-@include('components.page-header', [
-    'crumb' => 'Admin / Dashboard',
-    'title' => 'Selamat datang, ' . auth()->user()->nama,
-    'subtitle' => 'Ringkasan administrasi penyaluran pekerja · ' . now()->translatedFormat('l, d F Y'),
-])
+<x-banner-sambutan :eyebrow="'Admin · ' . now()->translatedFormat('l, d F Y')" :title="'Selamat datang, ' . auth()->user()->nama"
+                   text="Ringkasan administrasi penyaluran pekerja: verifikasi, pemesanan, dan laporan dalam satu tempat.">
+    <a href="{{ route('admin.verification') }}" class="btn-sun"><x-icon name="shield-check" class="h-5 w-5" /> Periksa Verifikasi</a>
+    <a href="{{ route('admin.orders') }}" class="btn-outline-light">Kelola Pemesanan</a>
+</x-banner-sambutan>
 
 {{-- Ringkasan --}}
-<div class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+<div class="mb-6 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
     <x-stat icon="users" label="Total pekerja" :value="$stats['total_workers']" tone="brand" :href="route('admin.workers')" :note="$stats['verified_workers'] . ' tampil di katalog'" />
     <x-stat icon="shield-check" label="Menunggu verifikasi" :value="$stats['pending_verify']" tone="amber" :href="route('admin.verification')" note="Perlu ditinjau" />
     <x-stat icon="clipboard" label="Pemesanan masuk" :value="$stats['incoming_orders']" tone="blue" :href="route('admin.orders')" note="Menunggu / diproses" />
     <x-stat icon="user" label="Total klien" :value="$stats['total_clients']" tone="violet" :href="route('admin.reports')" :note="$stats['placements_month'] . ' penyaluran bulan ini'" />
 </div>
 
-<div class="grid gap-6 2xl:grid-cols-3">
+<div class="grid gap-6 xl:grid-cols-3">
     {{-- Menunggu verifikasi --}}
     <div class="card reveal flex flex-col">
-        <div class="flex items-center justify-between border-b border-line px-5 py-4">
+        <div class="card-head">
             <h2 class="card-title">Verifikasi pekerja</h2>
-            <a href="{{ route('admin.verification') }}" class="text-sm font-medium text-primary hover:underline">Lihat semua</a>
+            <a href="{{ route('admin.verification') }}" class="text-sm font-bold text-primary hover:underline">Lihat semua</a>
         </div>
         <div class="flex-1">
             @forelse ($pendingVerifications as $p)
@@ -31,7 +31,7 @@
                         <p class="truncate text-sm font-semibold text-ink">{{ $p->pengguna->nama }}</p>
                         <p class="text-xs text-muted">{{ $p->labelKategori() }}</p>
                     </div>
-                    <span class="text-sm font-medium text-primary">Periksa</span>
+                    <span class="btn-primary btn-sm">Periksa</span>
                 </a>
             @empty
                 <x-empty-state illustration="kosong" title="Tidak ada antrean verifikasi" message="Semua data pekerja sudah diperiksa." compact />
@@ -44,22 +44,22 @@
                 @php $n = $perKategori[$kode] ?? 0; @endphp
                 <div class="mb-2.5 last:mb-0">
                     <div class="mb-1 flex justify-between text-sm"><span class="text-ink">{{ $label }}</span><span class="font-semibold">{{ $n }}</span></div>
-                    <div class="h-2 overflow-hidden rounded-full bg-canvas"><div class="h-2 rounded-full bg-primary-accent" style="width: {{ round($n / $total * 100) }}%"></div></div>
+                    <div class="h-2 overflow-hidden rounded-full bg-canvas"><div class="skor-bar h-2 rounded-full bg-primary-accent" style="--skor: {{ round($n / $total * 100) }}%"></div></div>
                 </div>
             @endforeach
         </div>
     </div>
 
     {{-- Pemesanan terbaru --}}
-    <div class="card reveal 2xl:col-span-2">
-        <div class="flex items-center justify-between border-b border-line px-5 py-4">
+    <div class="card reveal xl:col-span-2">
+        <div class="card-head">
             <h2 class="card-title">Pemesanan terbaru</h2>
-            <a href="{{ route('admin.orders') }}" class="text-sm font-medium text-primary hover:underline">Kelola pemesanan</a>
+            <a href="{{ route('admin.orders') }}" class="text-sm font-bold text-primary hover:underline">Kelola pemesanan</a>
         </div>
         @if ($recentOrders->isEmpty())
             <x-empty-state illustration="pesanan" title="Belum ada pemesanan" compact />
         @else
-            <div class="table-wrap px-2 py-2">
+            <div class="table-wrap">
                 <table class="table-base">
                     <thead><tr><th>Pesanan</th><th>Klien</th><th>Pekerja</th><th>Tanggal</th><th>Status</th></tr></thead>
                     <tbody>

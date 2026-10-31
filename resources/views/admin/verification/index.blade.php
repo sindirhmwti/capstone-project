@@ -28,11 +28,11 @@
     </form>
 </div>
 
-<div class="card">
+<div class="card overflow-hidden">
     @if ($pekerja->isEmpty())
         <x-empty-state illustration="kosong" title="Tidak ada data pekerja dengan status ini." message="Pilih tab status lain untuk melihat data." />
     @else
-        <div class="table-wrap p-2">
+        <div class="table-wrap">
             <table class="table-base">
                 <thead><tr><th>Nama pekerja</th><th>Kategori</th><th>Tanggal pengajuan</th><th>Status</th><th>Dokumen</th><th class="text-right">Aksi</th></tr></thead>
                 <tbody>
@@ -52,21 +52,23 @@
                             <td class="text-muted">{{ $tanggal ? $tanggal->format('d/m/Y H:i') : '-' }}</td>
                             <td><x-badge :status="$p->status_verifikasi">{{ $p->labelStatus() }}</x-badge></td>
                             <td>
-                                <div class="space-y-1">
+                                <div class="flex flex-wrap gap-1.5">
                                     @foreach ($p->dokumenWajib() as $jenis)
                                         @php $dok = $p->dokumenTerbaru($jenis); @endphp
                                         @if ($dok)
-                                            <a href="{{ $dok->url() }}" target="_blank" rel="noopener" class="flex items-center gap-1 text-xs font-medium text-primary hover:underline"><x-icon name="file-text" class="h-3.5 w-3.5" /> {{ $dok->labelJenis() }}</a>
+                                            <a href="{{ $dok->url() }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-2.5 py-1 text-xs font-bold text-primary-dark hover:bg-mint"><x-icon name="file-text" class="h-3.5 w-3.5" /> {{ $dok->labelJenis() }}</a>
                                         @else
-                                            <span class="flex items-center gap-1 text-xs text-red-600"><x-icon name="x-circle" class="h-3.5 w-3.5" /> {{ \App\Models\DokumenPekerja::JENIS[$jenis] }}</span>
+                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-2.5 py-1 text-xs font-bold text-red-700"><x-icon name="x-circle" class="h-3.5 w-3.5" /> {{ \App\Models\DokumenPekerja::JENIS[$jenis] }}</span>
                                         @endif
                                     @endforeach
                                 </div>
                             </td>
                             <td class="text-right">
-                                <a href="{{ route('admin.verification.show', $p) }}" class="{{ $p->status_verifikasi === 'menunggu' ? 'btn-primary' : 'btn-secondary' }} btn-sm">
-                                    {{ $p->status_verifikasi === 'menunggu' ? 'Periksa' : 'Lihat detail' }}
-                                </a>
+                                @if ($p->status_verifikasi === 'menunggu')
+                                    <a href="{{ route('admin.verification.show', $p) }}" class="btn-primary btn-sm"><x-icon name="shield-check" class="h-4 w-4" /> Periksa</a>
+                                @else
+                                    <a href="{{ route('admin.verification.show', $p) }}" class="icon-btn" data-tip="Lihat detail" aria-label="Lihat detail {{ $p->pengguna->nama }}"><x-icon name="eye" class="h-5 w-5" /></a>
+                                @endif
                             </td>
                         </tr>
                     @endforeach

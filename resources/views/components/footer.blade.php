@@ -1,44 +1,80 @@
-<footer id="hubungi-kami" class="bg-primary-darker text-white">
-    <div class="container-page grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-12">
+{{-- Footer publik: berlatar hijau sangat tua, kaya informasi --}}
+<footer id="hubungi-kami" class="scroll-mt-20 bg-primary-deep text-white">
+    <div class="container-page grid gap-12 py-16 lg:grid-cols-12 lg:py-20">
         <div class="lg:col-span-4">
-            <x-logo variant="light" />
-            <p class="mt-4 max-w-xs text-sm leading-relaxed text-white/70">
-                Platform pencocokan ART, Baby Sitter, dan Perawat Lansia milik PT Shaka Abadi Nusantara.
-                Menghubungkan kebutuhan keluarga dengan keahlian yang tepat.
+            <x-logo variant="light" size="h-10" />
+            <p class="mt-5 max-w-sm text-base leading-relaxed text-white/70">
+                temukerja adalah layanan pencarian dan pemesanan ART, Baby Sitter, dan Perawat Lansia milik
+                <strong class="font-semibold text-white">PT Shaka Abadi Nusantara</strong>. Kami menghubungkan kebutuhan keluarga dengan pekerja yang sudah diverifikasi.
             </p>
+            <div class="mt-6 flex flex-wrap gap-3">
+                <a href="{{ route('register') }}" class="btn-sun btn-sm">Daftar Sekarang</a>
+                <a href="{{ route('login') }}" class="btn-outline-light btn-sm">Masuk</a>
+            </div>
         </div>
 
-        <div class="lg:col-span-2">
-            <h3 class="text-sm font-semibold uppercase tracking-wider text-white">Navigasi</h3>
-            <ul class="mt-4 space-y-2.5 text-sm">
-                @foreach (['Beranda' => url('/'), 'Layanan' => url('/#layanan'), 'Cara Kerja' => url('/#cara-pemesanan'), 'Katalog Pekerja' => route('workers.index')] as $label => $href)
-                    <li><a href="{{ $href }}" class="text-white/70 transition-colors hover:text-white">{{ $label }}</a></li>
-                @endforeach
-            </ul>
+        @php
+            $kolom = [
+                'Layanan' => [
+                    'Asisten Rumah Tangga' => route('workers.index', ['category' => 'ART']),
+                    'Baby Sitter' => route('workers.index', ['category' => 'Baby Sitter']),
+                    'Perawat Lansia' => route('workers.index', ['category' => 'Perawat Lansia']),
+                    'Katalog Pekerja' => route('workers.index'),
+                ],
+                'Perusahaan' => [
+                    'Tentang Kami' => url('/#tentang-kami'),
+                    'Cara Kerja' => url('/#cara-pemesanan'),
+                    'Kenapa temukerja' => url('/#keunggulan'),
+                    'Daftar sebagai Pekerja' => route('register.pekerja'),
+                ],
+                'Bantuan' => [
+                    'Pertanyaan Umum' => url('/#faq'),
+                    'Masuk Akun' => route('login'),
+                    'Daftar sebagai Klien' => route('register.klien'),
+                ],
+            ];
+        @endphp
+
+        <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-5">
+            @foreach ($kolom as $judul => $isi)
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-[0.14em] text-mint">{{ $judul }}</h3>
+                    <ul class="mt-5 space-y-3">
+                        @foreach ($isi as $label => $href)
+                            <li><a href="{{ $href }}" class="text-[15px] text-white/75 transition-colors hover:text-white">{{ $label }}</a></li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endforeach
         </div>
 
-        <div class="lg:col-span-2">
-            <h3 class="text-sm font-semibold uppercase tracking-wider text-white">Akun</h3>
-            <ul class="mt-4 space-y-2.5 text-sm">
-                <li><a href="{{ route('login') }}" class="text-white/70 transition-colors hover:text-white">Masuk</a></li>
-                <li><a href="{{ route('register') }}" class="text-white/70 transition-colors hover:text-white">Daftar sebagai Klien</a></li>
-                <li><a href="{{ route('register') }}" class="text-white/70 transition-colors hover:text-white">Daftar sebagai Pekerja</a></li>
-            </ul>
-        </div>
-
-        <div class="lg:col-span-4">
-            <h3 class="text-sm font-semibold uppercase tracking-wider text-white">Hubungi Kami</h3>
-            <ul class="mt-4 space-y-3 text-sm text-white/70">
-                <li class="flex gap-3"><x-icon name="map-pin" class="mt-0.5 h-5 w-5 text-mint" /> Komplek P&amp;K Jl. Melur No. 183, Cipondoh Indah, Kota Tangerang, Banten</li>
-                <li class="flex gap-3"><x-icon name="phone" class="h-5 w-5 text-mint" /> <a href="tel:+6281200000000" class="hover:text-white">+62 812-0000-0000</a></li>
-                <li class="flex gap-3"><x-icon name="mail" class="h-5 w-5 text-mint" /> <a href="mailto:info@temukerja.id" class="hover:text-white">info@temukerja.id</a></li>
+        <div class="lg:col-span-3">
+            <h3 class="text-sm font-bold uppercase tracking-[0.14em] text-mint">Kantor Kami</h3>
+            <ul class="mt-5 space-y-4 text-[15px] text-white/75">
+                <li class="flex gap-3">
+                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-sun"><x-icon name="map-pin" /></span>
+                    <span>Komplek P&amp;K Jl. Melur No. 183, Cipondoh, Kota Tangerang, Banten</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-sun"><x-icon name="building" /></span>
+                    <span>PT Shaka Abadi Nusantara</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-sun"><x-icon name="phone" /></span>
+                    <a href="tel:+6281200000000" class="hover:text-white">+62 812-0000-0000</a>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-sun"><x-icon name="mail" /></span>
+                    <a href="mailto:info@temukerja.id" class="hover:text-white">info@temukerja.id</a>
+                </li>
             </ul>
         </div>
     </div>
+
     <div class="border-t border-white/10">
-        <div class="container-page flex flex-col gap-2 py-5 text-xs text-white/55 sm:flex-row sm:justify-between">
-            <span>&copy; {{ date('Y') }} PT Shaka Abadi Nusantara. Semua hak dilindungi.</span>
-            <span>Temukerja — Kebutuhan bertemu keahlian.</span>
+        <div class="container-page flex flex-col gap-2 py-6 text-sm text-white/60 sm:flex-row sm:items-center sm:justify-between">
+            <p>&copy; {{ date('Y') }} PT Shaka Abadi Nusantara. Hak cipta dilindungi.</p>
+            <p>temukerja — Menghubungkan kebutuhan dengan keahlian.</p>
         </div>
     </div>
 </footer>

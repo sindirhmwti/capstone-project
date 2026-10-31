@@ -22,6 +22,7 @@
         'md' => 'h-11 w-11 text-sm',
         'lg' => 'h-14 w-14 text-lg',
         'xl' => 'h-20 w-20 text-2xl',
+        '2xl' => 'h-24 w-24 text-3xl',
     ][$size] ?? 'h-11 w-11 text-sm';
 @endphp
 

@@ -15,16 +15,16 @@
     </div>
 
     <div class="xl:col-span-2">
-        <form method="POST" action="{{ route('admin.verification.process', $profil) }}" class="card card-body space-y-5 xl:sticky xl:top-24">
+        <form method="POST" action="{{ route('admin.verification.process', $profil) }}" class="card card-body space-y-5 xl:sticky xl:top-28">
             @csrf
             <div class="flex items-center justify-between">
-                <h2 class="card-title">Dokumen persyaratan</h2>
+                <h2 class="card-title flex items-center gap-2"><x-icon name="file-check" class="text-primary" /> Dokumen persyaratan</h2>
                 <x-badge :status="$profil->status_verifikasi">{{ $profil->labelStatus() }}</x-badge>
             </div>
 
             @foreach ($profil->dokumenWajib() as $jenis)
                 @php $dok = $profil->dokumenTerbaru($jenis); @endphp
-                <div class="rounded-2xl border border-line p-3">
+                <div class="rounded-3xl border border-line bg-canvas/50 p-4">
                     <div class="mb-2.5 flex items-center justify-between gap-2">
                         <p class="flex items-center gap-2 text-sm font-semibold"><x-icon name="file-text" class="h-4 w-4 text-primary" /> {{ \App\Models\DokumenPekerja::JENIS[$jenis] }}</p>
                         @if ($dok) <x-badge :status="$dok->status_verifikasi">{{ $dok->labelStatus() }}</x-badge> @endif

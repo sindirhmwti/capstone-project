@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" role="img" aria-labelledby="judul">
+  <title id="judul">Ilustrasi perawat mendampingi lansia</title>
+  <circle cx="160" cy="124" r="98" fill="#FFFFFF" opacity=".55"/>
+  <ellipse cx="160" cy="226" rx="120" ry="8" fill="#123A2E" opacity=".12"/>
+  <!-- Tanda plus kesehatan -->
+  <rect x="42" y="44" width="40" height="40" rx="12" fill="#FFFFFF"/>
+  <path d="M62 54v20M52 64h20" stroke="#F07F5C" stroke-width="6" stroke-linecap="round"/>
+  <!-- Kursi -->
+  <rect x="70" y="120" width="16" height="104" rx="8" fill="#1A5240"/>
+  <rect x="70" y="164" width="98" height="16" rx="8" fill="#246C54"/>
+  <rect x="150" y="176" width="12" height="48" rx="6" fill="#1A5240"/>
+  <!-- Lansia duduk -->
+  <path d="M90 164c0-30 12-50 32-50s32 20 32 50z" fill="#F5B83D"/>
+  <path d="M124 176h40l4 46" stroke="#123A2E" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <rect x="116" y="90" width="13" height="14" rx="4" fill="#C98B62"/>
+  <circle cx="122" cy="74" r="22" fill="#C98B62"/>
+  <path d="M100 72c0-16 10-26 22-26 14 0 23 10 22 26-6-8-36-8-44 0z" fill="#E1E8E4"/>
+  <circle cx="114" cy="76" r="6" fill="none" stroke="#12201A" stroke-width="2"/>
+  <circle cx="130" cy="76" r="6" fill="none" stroke="#12201A" stroke-width="2"/>
+  <path d="M120 76h4" stroke="#12201A" stroke-width="2"/>
+  <path d="M116 88c3 3 9 3 12 0" stroke="#1F1A17" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+  <!-- Tongkat -->
+  <path d="M176 120v104" stroke="#B57A4E" stroke-width="5" stroke-linecap="round"/>
+  <path d="M176 120c0-10 14-10 14 0" stroke="#B57A4E" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <!-- Perawat berdiri -->
+  <rect x="222" y="160" width="14" height="64" rx="7" fill="#123A2E"/>
+  <rect x="242" y="160" width="14" height="64" rx="7" fill="#123A2E"/>
+  <path d="M206 104c0-20 15-34 33-34s33 14 33 34v66h-66z" fill="#FFFFFF"/>
+  <path d="M206 104c0-20 15-34 33-34s33 14 33 34v66h-66z" fill="none" stroke="#B9DECF" stroke-width="3"/>
+  <path d="M232 70l7 14 7-14" fill="#3BA877"/>
+  <rect x="246" y="110" width="16" height="16" rx="4" fill="#E8F3EE"/>
+  <path d="M254 113v10M249 118h10" stroke="#F07F5C" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M210 110c-14 10-24 20-30 30" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <path d="M210 110c-14 10-24 20-30 30" stroke="#B9DECF" stroke-width="3" stroke-linecap="round" fill="none" opacity=".6"/>
+  <circle cx="178" cy="142" r="7" fill="#8A5A3C"/>
+  <rect x="232" y="54" width="14" height="16" rx="4" fill="#8A5A3C"/>
+  <circle cx="239" cy="38" r="22" fill="#8A5A3C"/>
+  <path d="M216 36c0-16 10-26 23-26 14 0 24 10 23 26-6-8-14-12-23-12-10 0-18 4-23 12z" fill="#1F1A17"/>
+  <path d="M220 22c8-8 30-8 38 0" stroke="#3BA877" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <circle cx="232" cy="40" r="2.2" fill="#1F1A17"/>
+  <circle cx="246" cy="40" r="2.2" fill="#1F1A17"/>
+  <path d="M234 50c3 3 7 3 10 0" stroke="#1F1A17" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+  <!-- Hati -->
+  <path d="M286 74c-4-8-16-6-16 2 0 8 16 16 16 16s16-8 16-16c0-8-12-10-16-2z" fill="#F07F5C"/>
+</svg>

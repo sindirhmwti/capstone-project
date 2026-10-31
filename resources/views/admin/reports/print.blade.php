@@ -24,7 +24,13 @@
         .ttd div { width: 220px; }
         .aksi { text-align: right; margin-bottom: 12px; }
         .aksi button { background: #246C54; color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
-        @media print { .aksi { display: none; } }
+        .aksi button:hover { background: #1A5240; }
+        /* Di layar: tampil seperti lembar kertas A4 di atas latar abu-abu */
+        @media screen {
+            html { background: #E8EDEA; }
+            body { max-width: 210mm; min-height: 297mm; margin: 24px auto; padding: 18mm 15mm; background: #fff; box-shadow: 0 10px 40px -12px rgba(18, 32, 26, .25); border-radius: 8px; }
+        }
+        @media print { .aksi { display: none; } * { animation: none !important; transition: none !important; } }
     </style>
 </head>
 <body>

@@ -17,17 +17,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     {{-- Menandai bahwa JavaScript aktif (dipakai animasi "reveal") --}}
-    <script>document.documentElement.classList.add('js');</script>
+    <script>
+        document.documentElement.classList.add('js');
+        try { if (localStorage.getItem('sidebar-ciut') === '1') document.documentElement.classList.add('sidebar-ciut'); } catch (e) {}
+    </script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
-<body class="@yield('body-class', 'bg-canvas')">
+<body class="@yield('body-class', 'bg-canvas')" @hasSection('halaman-publik') data-halaman="publik" data-body-publik @endif>
     @yield('body')
 
     @unless (View::hasSection('tanpa-toast'))
         @include('components.flash')
     @endunless
+    @include('components.modal-konfirmasi')
     @stack('scripts')
 </body>
 </html>

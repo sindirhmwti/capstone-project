@@ -9,14 +9,14 @@
     'aksi' => '<a href="' . route('admin.workers') . '" class="btn-secondary">Kembali ke daftar</a>',
 ])
 
-<div class="grid gap-6 lg:grid-cols-3">
-    <div class="space-y-6 lg:col-span-2">
+<div class="grid gap-6 xl:grid-cols-3">
+    <div class="space-y-6 xl:col-span-2">
         @include('components.detail-pekerja', ['tampilKontak' => true, 'tampilDokumen' => true])
 
         <div class="card">
-            <div class="border-b border-line px-5 py-4"><h2 class="card-title">Riwayat pemesanan</h2></div>
+            <div class="card-head"><h2 class="card-title flex items-center gap-2"><x-icon name="clipboard" class="text-primary" /> Riwayat pemesanan</h2></div>
             @forelse ($profil->pemesanan->sortByDesc('tanggal_pemesanan') as $o)
-                <a href="{{ route('admin.orders.show', $o) }}" class="flex flex-wrap items-center justify-between gap-2 border-b border-line px-5 py-3.5 text-sm transition-colors last:border-0 hover:bg-canvas">
+                <a href="{{ route('admin.orders.show', $o) }}" class="flex flex-wrap items-center justify-between gap-2 border-b border-line px-5 py-4 text-[15px] transition-colors sm:px-6 last:border-0 hover:bg-canvas">
                     <span><span class="font-semibold text-ink">{{ $o->kode() }}</span> <span class="text-muted">· {{ $o->klien->nama }} · {{ $o->tanggal_pemesanan->format('d/m/Y') }}</span></span>
                     <x-badge :status="$o->status_pemesanan">{{ $o->labelStatus() }}</x-badge>
                 </a>
@@ -26,20 +26,20 @@
         </div>
     </div>
 
-    <aside class="space-y-6">
+    <aside class="space-y-6 xl:sticky xl:top-28 xl:h-fit">
         <form method="POST" action="{{ route('admin.workers.update', $profil) }}" class="card card-body space-y-4" novalidate>
             @csrf
             @method('PUT')
-            <h2 class="card-title">Kelola data akun</h2>
+            <h2 class="card-title flex items-center gap-2"><x-icon name="user" class="text-primary" /> Kelola data akun</h2>
             <x-field name="nama" label="Nama lengkap" required :value="$profil->pengguna->nama" />
             <x-field name="email" type="email" label="Email" required :value="$profil->pengguna->email" />
             <x-field name="no_telepon" type="tel" label="Nomor telepon" required :value="$profil->pengguna->no_telepon" />
             <x-field name="status_akun" type="select" label="Status akun" required :value="$profil->pengguna->status_akun" :options="['aktif' => 'Aktif', 'nonaktif' => 'Nonaktif']"
                      help="Akun nonaktif tidak dapat login dan tidak tampil di katalog klien." />
-            <button type="submit" class="btn-primary w-full">Simpan Perubahan</button>
+            <button type="submit" class="btn-primary w-full"><x-icon name="check" class="h-5 w-5" /> Simpan Perubahan</button>
         </form>
 
-        <div class="card card-body text-sm">
+        <div class="card card-body text-[15px]">
             <h2 class="card-title mb-4">Verifikasi</h2>
             <div class="flex items-center justify-between"><span class="text-muted">Status</span><x-badge :status="$profil->status_verifikasi">{{ $profil->labelStatus() }}</x-badge></div>
             @if ($profil->verifikator)

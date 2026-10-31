@@ -12,9 +12,9 @@
                     @endif
                     <x-badge :status="$r->status_baru">{{ \App\Models\Pemesanan::STATUS[$r->status_baru] ?? $r->status_baru }}</x-badge>
                 </div>
-                <p class="mt-1.5 text-xs text-muted">{{ $r->tanggal_perubahan->translatedFormat('d F Y, H:i') }} · oleh {{ $r->pengubah?->nama ?? 'Sistem' }}</p>
+                <p class="mt-1.5 text-sm text-muted"><span title="{{ $r->tanggal_perubahan->translatedFormat('d F Y, H:i') }}">{{ $r->tanggal_perubahan->diffForHumans() }}</span> · {{ $r->tanggal_perubahan->translatedFormat('d M Y, H:i') }} · oleh {{ $r->pengubah?->nama ?? 'Sistem' }}</p>
                 @if ($r->catatan_perubahan)
-                    <p class="mt-1.5 rounded-lg bg-canvas px-3 py-2 text-sm text-ink">{{ $r->catatan_perubahan }}</p>
+                    <p class="mt-2 rounded-xl bg-canvas px-3.5 py-2.5 text-[15px] text-ink">{{ $r->catatan_perubahan }}</p>
                 @endif
             </li>
         @endforeach

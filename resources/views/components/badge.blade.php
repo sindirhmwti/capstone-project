@@ -9,11 +9,11 @@
     // Pemetaan status (pekerja, dokumen, pesanan, akun) ke warna
     $peta = [
         'terverifikasi' => 'green', 'valid' => 'green', 'disetujui' => 'green', 'aktif' => 'green',
-        'selesai' => 'brand',
+        'selesai' => 'slate',
         'menunggu' => 'amber',
         'diproses' => 'blue',
-        'ditolak' => 'red', 'tidak_valid' => 'red',
-        'belum_lengkap' => 'gray', 'dibatalkan' => 'gray', 'nonaktif' => 'gray',
+        'ditolak' => 'red', 'tidak_valid' => 'red', 'dibatalkan' => 'red',
+        'belum_lengkap' => 'gray', 'nonaktif' => 'gray',
     ];
     $kelas = [
         'green' => 'bg-green-50 text-green-700 ring-green-600/20',
@@ -21,11 +21,14 @@
         'amber' => 'bg-amber-50 text-amber-800 ring-amber-600/25',
         'blue' => 'bg-sky-50 text-sky-700 ring-sky-600/20',
         'red' => 'bg-red-50 text-red-700 ring-red-600/20',
-        'gray' => 'bg-gray-100 text-gray-700 ring-gray-500/20',
+        'gray' => 'bg-gray-100 text-gray-600 ring-gray-400/25',
+        'slate' => 'bg-slate-200 text-slate-800 ring-slate-500/25',
+        'violet' => 'bg-violet-50 text-violet-700 ring-violet-600/20',
     ];
     $warnaTitik = [
         'green' => 'bg-green-500', 'brand' => 'bg-primary', 'amber' => 'bg-amber-500',
         'blue' => 'bg-sky-500', 'red' => 'bg-red-500', 'gray' => 'bg-gray-400',
+        'slate' => 'bg-slate-700', 'violet' => 'bg-violet-500',
     ];
     $c = $color ?? ($peta[$status] ?? 'gray');
 @endphp

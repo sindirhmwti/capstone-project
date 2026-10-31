@@ -4,13 +4,13 @@
     @foreach ($daftar as $i => $nama)
         @php $no = $i + 1; $selesai = $no < $aktif; $kini = $no === $aktif; @endphp
         <li class="flex items-center gap-2 {{ $loop->last ? '' : 'flex-1' }}" @if ($kini) aria-current="step" @endif>
-            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-base font-extrabold
                          {{ $selesai ? 'bg-primary text-white' : ($kini ? 'bg-primary text-white ring-4 ring-primary/15' : 'bg-canvas text-muted ring-1 ring-line') }}">
                 @if ($selesai) <x-icon name="check" class="h-4 w-4" /> @else {{ $no }} @endif
             </span>
-            <span class="hidden text-sm font-medium sm:inline {{ $kini || $selesai ? 'text-ink' : 'text-muted' }}">{{ $nama }}</span>
+            <span class="hidden text-[15px] font-semibold sm:inline {{ $kini || $selesai ? 'text-ink' : 'text-muted' }}">{{ $nama }}</span>
             @unless ($loop->last)
-                <span class="h-0.5 flex-1 rounded {{ $selesai ? 'bg-primary' : 'bg-line' }}"></span>
+                <span class="h-1 flex-1 rounded-full {{ $selesai ? 'bg-primary' : 'bg-line' }}"></span>
             @endunless
         </li>
     @endforeach
