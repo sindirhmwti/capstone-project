@@ -2,36 +2,36 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * Uji fitur yang tidak memerlukan basis data
+ * (alur lengkap diuji melalui Black Box Testing pada docs/BLACK_BOX_TESTING.md).
+ */
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
-    public function test_the_application_returns_a_successful_response(): void
+    public function test_halaman_login_dapat_dibuka(): void
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
+        $this->get('/login')->assertOk()->assertSee('Masuk');
     }
 
-    public function test_admin_dashboard_displays_pending_verification_dates(): void
+    public function test_halaman_pilih_akun_hanya_klien_dan_pekerja(): void
     {
-        $response = $this->get('/admin/dashboard');
-
-        $response->assertStatus(200)
-            ->assertSee('Diajukan: 2026-10-30');
+        $this->get('/register')->assertOk()
+            ->assertSee('Daftar sebagai Klien')
+            ->assertSee('Daftar sebagai Pekerja');
     }
 
-    public function test_client_dashboard_displays_without_missing_sidebar_routes(): void
+    public function test_tidak_ada_halaman_registrasi_admin(): void
     {
-        $this->get('/client/dashboard')->assertOk();
+        $this->get('/register/pekerja/admin')->assertNotFound();
+        $this->get('/register/admin')->assertNotFound();
     }
 
-    public function test_worker_dashboard_displays_without_missing_sidebar_routes(): void
+    public function test_tamu_diarahkan_ke_login_saat_membuka_dashboard(): void
     {
-        $this->get('/worker/dashboard')->assertOk();
+        $this->get('/admin/dashboard')->assertRedirect('/login');
+        $this->get('/client/dashboard')->assertRedirect('/login');
+        $this->get('/worker/dashboard')->assertRedirect('/login');
     }
 }

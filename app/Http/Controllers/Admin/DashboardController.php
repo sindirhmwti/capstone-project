@@ -3,37 +3,35 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pemesanan;
+use App\Models\Pengguna;
+use App\Models\ProfilPekerja;
 
 class DashboardController extends Controller
 {
-    /**
-     * Show the admin dashboard.
-     * TODO: Fetch real stats from Supabase PostgreSQL.
-     */
+    /** Dashboard admin: ringkasan pekerja, verifikasi, dan pemesanan. */
     public function index()
     {
-        // Dummy stats — replace with Supabase queries later
         $stats = [
-            'total_workers'   => 128,
-            'pending_verify'  => 14,
-            'total_clients'   => 243,
-            'active_orders'   => 37,
+            'total_workers' => ProfilPekerja::count(),
+            'verified_workers' => ProfilPekerja::tampilDiKatalog()->count(),
+            'pending_verify' => ProfilPekerja::where('status_verifikasi', 'menunggu')->count(),
+            'total_clients' => Pengguna::where('peran', Pengguna::PERAN_KLIEN)->count(),
+            'incoming_orders' => Pemesanan::whereIn('status_pemesanan', ['menunggu', 'diproses'])->count(),
+            'placements_month' => Pemesanan::whereIn('status_pemesanan', Pemesanan::STATUS_PENYALURAN)
+                ->whereMonth('tanggal_pemesanan', now()->month)->whereYear('tanggal_pemesanan', now()->year)->count(),
         ];
 
-        $recentActivities = [
-            ['name' => 'Dewi Lestari',   'category' => 'Baby Sitter',    'status' => 'Menunggu',      'date' => '2026-10-30'],
-            ['name' => 'Nurul Aini',     'category' => 'Perawat Lansia', 'status' => 'Terverifikasi', 'date' => '2026-10-29'],
-            ['name' => 'Siti Rahayu',    'category' => 'ART',            'status' => 'Aktif',         'date' => '2026-10-29'],
-            ['name' => 'Rina Marlina',   'category' => 'Baby Sitter',    'status' => 'Menunggu',      'date' => '2026-10-28'],
-            ['name' => 'Laila Permata',  'category' => 'Perawat Lansia', 'status' => 'Terverifikasi', 'date' => '2026-10-27'],
-        ];
+        $perKategori = ProfilPekerja::selectRaw('kategori_pekerjaan, count(*) as jumlah')
+            ->groupBy('kategori_pekerjaan')->pluck('jumlah', 'kategori_pekerjaan');
 
-        $pendingVerifications = [
-            ['name' => 'Dewi Lestari', 'category' => 'Baby Sitter',    'date' => '2026-10-30'],
-            ['name' => 'Rina Marlina', 'category' => 'Baby Sitter',    'date' => '2026-10-28'],
-            ['name' => 'Laila Permata','category' => 'Perawat Lansia', 'date' => '2026-10-27'],
-        ];
+        $pendingVerifications = ProfilPekerja::with('pengguna')
+            ->where('status_verifikasi', 'menunggu')
+            ->orderBy('id_pekerja')->take(5)->get();
 
-        return view('admin.dashboard', compact('stats', 'recentActivities', 'pendingVerifications'));
+        $recentOrders = Pemesanan::with(['klien', 'profilPekerja.pengguna'])
+            ->latest('tanggal_pemesanan')->take(5)->get();
+
+        return view('admin.dashboard', compact('stats', 'perKategori', 'pendingVerifications', 'recentOrders'));
     }
 }

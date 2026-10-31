@@ -12,22 +12,29 @@
             {{-- Center Nav Links (Desktop) --}}
             <div class="hidden md:flex items-center space-x-6">
                 <a href="{{ url('/') }}" class="text-sm font-medium text-[#172B23] hover:text-[#176B4D] transition-colors duration-150">Beranda</a>
-                <a href="{{ url('/tentang-kami') }}" class="text-sm font-medium text-[#172B23] hover:text-[#176B4D] transition-colors duration-150">Tentang Kami</a>
-                <a href="{{ url('/cara-pemesanan') }}" class="text-sm font-medium text-[#172B23] hover:text-[#176B4D] transition-colors duration-150">Cara Pemesanan</a>
-                <a href="{{ url('/katalog') }}" class="text-sm font-medium text-[#172B23] hover:text-[#176B4D] transition-colors duration-150">Katalog Pekerja</a>
-                <a href="{{ url('/hubungi-kami') }}" class="text-sm font-medium text-[#172B23] hover:text-[#176B4D] transition-colors duration-150">Hubungi Kami</a>
+                <a href="{{ url('/#tentang-kami') }}" class="text-sm font-medium text-[#172B23] hover:text-[#176B4D] transition-colors duration-150">Tentang Kami</a>
+                <a href="{{ url('/#cara-pemesanan') }}" class="text-sm font-medium text-[#172B23] hover:text-[#176B4D] transition-colors duration-150">Cara Pemesanan</a>
+                <a href="{{ route('workers.index') }}" class="text-sm font-medium text-[#172B23] hover:text-[#176B4D] transition-colors duration-150">Katalog Pekerja</a>
+                <a href="{{ url('/#hubungi-kami') }}" class="text-sm font-medium text-[#172B23] hover:text-[#176B4D] transition-colors duration-150">Hubungi Kami</a>
             </div>
 
             {{-- Right Buttons (Desktop) --}}
             <div class="hidden md:flex items-center space-x-3">
-                <a href="{{ route('login') }}"
-                   class="inline-flex items-center px-4 py-2 border border-[#176B4D] text-[#176B4D] text-sm font-medium rounded-lg hover:bg-[#E4F2E8] transition-colors duration-150">
-                    Masuk
-                </a>
-                <a href="{{ route('register') }}"
-                   class="inline-flex items-center px-4 py-2 bg-[#176B4D] text-white text-sm font-medium rounded-lg hover:bg-[#104C38] transition-colors duration-150">
-                    Daftar Sekarang
-                </a>
+                @auth
+                    <a href="{{ route(auth()->user()->routeDashboard()) }}"
+                       class="inline-flex items-center px-4 py-2 bg-[#176B4D] text-white text-sm font-medium rounded-lg hover:bg-[#104C38] transition-colors duration-150">
+                        Dashboard
+                    </a>
+                @else
+                    <a href="{{ route('login') }}"
+                       class="inline-flex items-center px-4 py-2 border border-[#176B4D] text-[#176B4D] text-sm font-medium rounded-lg hover:bg-[#E4F2E8] transition-colors duration-150">
+                        Masuk
+                    </a>
+                    <a href="{{ route('register') }}"
+                       class="inline-flex items-center px-4 py-2 bg-[#176B4D] text-white text-sm font-medium rounded-lg hover:bg-[#104C38] transition-colors duration-150">
+                        Daftar Sekarang
+                    </a>
+                @endauth
             </div>
 
             {{-- Mobile Hamburger --}}
@@ -63,32 +70,39 @@
                class="block px-3 py-2 rounded-md text-sm font-medium text-[#172B23] hover:text-[#176B4D] hover:bg-[#E4F2E8] transition-colors duration-150">
                 Beranda
             </a>
-            <a href="{{ url('/tentang-kami') }}"
+            <a href="{{ url('/#tentang-kami') }}"
                class="block px-3 py-2 rounded-md text-sm font-medium text-[#172B23] hover:text-[#176B4D] hover:bg-[#E4F2E8] transition-colors duration-150">
                 Tentang Kami
             </a>
-            <a href="{{ url('/cara-pemesanan') }}"
+            <a href="{{ url('/#cara-pemesanan') }}"
                class="block px-3 py-2 rounded-md text-sm font-medium text-[#172B23] hover:text-[#176B4D] hover:bg-[#E4F2E8] transition-colors duration-150">
                 Cara Pemesanan
             </a>
-            <a href="{{ url('/katalog') }}"
+            <a href="{{ route('workers.index') }}"
                class="block px-3 py-2 rounded-md text-sm font-medium text-[#172B23] hover:text-[#176B4D] hover:bg-[#E4F2E8] transition-colors duration-150">
                 Katalog Pekerja
             </a>
-            <a href="{{ url('/hubungi-kami') }}"
+            <a href="{{ url('/#hubungi-kami') }}"
                class="block px-3 py-2 rounded-md text-sm font-medium text-[#172B23] hover:text-[#176B4D] hover:bg-[#E4F2E8] transition-colors duration-150">
                 Hubungi Kami
             </a>
         </div>
         <div class="px-4 pb-4 flex flex-col space-y-2 border-t border-gray-100 pt-3">
-            <a href="{{ route('login') }}"
-               class="w-full text-center px-4 py-2 border border-[#176B4D] text-[#176B4D] text-sm font-medium rounded-lg hover:bg-[#E4F2E8] transition-colors duration-150">
-                Masuk
-            </a>
-            <a href="{{ route('register') }}"
-               class="w-full text-center px-4 py-2 bg-[#176B4D] text-white text-sm font-medium rounded-lg hover:bg-[#104C38] transition-colors duration-150">
-                Daftar Sekarang
-            </a>
+            @auth
+                <a href="{{ route(auth()->user()->routeDashboard()) }}"
+                   class="w-full text-center px-4 py-2 bg-[#176B4D] text-white text-sm font-medium rounded-lg hover:bg-[#104C38] transition-colors duration-150">
+                    Dashboard
+                </a>
+            @else
+                <a href="{{ route('login') }}"
+                   class="w-full text-center px-4 py-2 border border-[#176B4D] text-[#176B4D] text-sm font-medium rounded-lg hover:bg-[#E4F2E8] transition-colors duration-150">
+                    Masuk
+                </a>
+                <a href="{{ route('register') }}"
+                   class="w-full text-center px-4 py-2 bg-[#176B4D] text-white text-sm font-medium rounded-lg hover:bg-[#104C38] transition-colors duration-150">
+                    Daftar Sekarang
+                </a>
+            @endauth
         </div>
     </div>
 </nav>
