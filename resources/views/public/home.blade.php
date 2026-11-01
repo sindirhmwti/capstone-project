@@ -189,7 +189,7 @@
                     [['list-checks', 'Pilih kriteria khusus', 'Hewan peliharaan, rumah bertingkat, bersedia menginap, dan lainnya.'],
                      ['bell', 'Pantau status pesanan', 'Setiap perubahan status dikabarkan lewat notifikasi.']],
                     [route('register.klien'), 'Daftar sebagai Klien'], [route('workers.index'), 'Cari Pekerja'], 'house'],
-                ['untuk-pekerja', 'Perempuan tersenyum menggunakan laptop di ruangan penuh tanaman, siap mendaftar sebagai pekerja', 'Untuk Calon Pekerja', 'Tampilkan keahlian Anda kepada keluarga yang membutuhkan',
+                ['untuk-pekerja', 'Pekerja rumah tangga berseragam tersenyum sambil memegang kemoceng dan botol semprot', 'Untuk Calon Pekerja', 'Tampilkan keahlian Anda kepada keluarga yang membutuhkan',
                     'Daftar gratis, lengkapi profil dan dokumen, lalu profil Anda tampil di katalog setelah diverifikasi admin yayasan.',
                     [['id-card', 'Profil profesional', 'Pengalaman, keahlian, dan kriteria Anda tampil rapi di katalog.'],
                      ['shield-check', 'Diverifikasi admin', 'Dokumen diperiksa sehingga klien lebih percaya kepada Anda.'],
@@ -205,7 +205,7 @@
                     <div class="relative {{ $balik ? 'lg:order-2' : '' }}" data-masuk="{{ $balik ? 'kanan' : 'kiri' }}">
                         <div class="absolute -inset-3 rounded-[2.5rem] {{ $balik ? 'bg-sun/30 -rotate-2' : 'bg-primary/15 rotate-2' }}" aria-hidden="true"></div>
                         <img src="{{ asset('images/photos/' . $foto . '.webp') }}" alt="{{ $alt }}" loading="lazy" width="1000" height="667"
-                             class="relative aspect-[4/3] w-full rounded-[2rem] object-cover shadow-lift">
+                             class="relative aspect-[4/3] w-full rounded-[2rem] object-cover shadow-lift {{ $foto === 'untuk-pekerja' ? 'object-[50%_20%]' : '' }}">
                         <span class="absolute -bottom-4 {{ $balik ? 'left-6' : 'right-6' }} flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-[15px] font-extrabold text-ink shadow-lift">
                             <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white"><x-icon :name="$ikonLabel" class="h-4 w-4" /></span>{{ $label }}
                         </span>

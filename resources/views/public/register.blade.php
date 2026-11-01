@@ -51,7 +51,7 @@
     <x-field name="nama" label="Nama lengkap" icon="user" required placeholder="Masukkan nama lengkap Anda" autocomplete="name" />
     <div class="grid gap-5 sm:grid-cols-2">
         <x-field name="email" type="email" label="Alamat email" icon="mail" required placeholder="nama@email.com" autocomplete="email" />
-        <x-field name="no_telepon" type="tel" label="Nomor telepon" icon="phone" required placeholder="08xxxxxxxxxx" autocomplete="tel" />
+        <x-field name="no_telepon" type="tel" label="Nomor WhatsApp" icon="message" required placeholder="08xxxxxxxxxx" autocomplete="tel" inputmode="tel" help="Kode verifikasi 4 digit akan dikirim ke WhatsApp ini." />
     </div>
 
     <div class="grid gap-5 sm:grid-cols-2">

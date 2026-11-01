@@ -1,8 +1,8 @@
 # Kredit Foto
 
-Semua foto di folder ini diunduh dari [Unsplash](https://unsplash.com) dan digunakan sesuai
-[Lisensi Unsplash](https://unsplash.com/license) (gratis untuk penggunaan komersial maupun nonkomersial,
-tanpa wajib atribusi). Atribusi tetap dicantumkan sebagai bentuk penghargaan kepada fotografer.
+Foto di folder ini diunduh dari [Unsplash](https://unsplash.com) (sesuai [Lisensi Unsplash](https://unsplash.com/license))
+dan [Pexels](https://www.pexels.com) (sesuai [Lisensi Pexels](https://www.pexels.com/license/)). Keduanya gratis untuk
+penggunaan komersial maupun nonkomersial, tanpa wajib atribusi. Atribusi tetap dicantumkan sebagai bentuk penghargaan kepada fotografer.
 
 Foto telah diubah ukurannya dan dikonversi ke format WebP (kualitas ±60–80%) agar ringan.
 Foto stok hanya dipakai untuk bagian pemasaran/tampilan (beranda, login, registrasi, banner),
@@ -15,7 +15,7 @@ Foto stok hanya dipakai untuk bagian pemasaran/tampilan (beranda, login, registr
 | layanan-babysitter.webp | Kartu layanan Baby Sitter | Brian Wangenheim | https://unsplash.com/photos/pE6Au9jbTs0 |
 | layanan-lansia.webp | Kartu layanan Perawat Lansia | Age Cymru | https://unsplash.com/photos/2obyM4zYt3Y |
 | untuk-keluarga.webp | Bagian "Untuk Keluarga" | Jhon David | https://unsplash.com/photos/3WgkTDw7XyE |
-| untuk-pekerja.webp | Bagian "Untuk Calon Pekerja" & kartu pilih akun | Shane Ryan Herilalaina | https://unsplash.com/photos/N9zoS5-DzkY |
+| untuk-pekerja.webp | Bagian "Untuk Calon Pekerja" & kartu pilih akun | Liliana Drew (Pexels) | https://www.pexels.com/photo/woman-in-black-shirt-holding-white-and-blue-sprayer-bottle-9462192/ |
 | panel-login.webp | Panel kiri halaman login | Golden Horn Bridge | https://unsplash.com/photos/JVTiBNe4V5A |
 | panel-registrasi.webp | Panel kiri halaman registrasi | Muhammad Iswandi | https://unsplash.com/photos/2lFt6pdPPoQ |
 | ruang-keluarga.webp | Latar CTA beranda & banner dashboard | Minh Pham | https://unsplash.com/photos/OtXADkUh3-I |

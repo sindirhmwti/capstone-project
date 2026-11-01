@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\PekerjaController as AdminPekerjaController;
 use App\Http\Controllers\Admin\PemesananController as AdminPemesananController;
 use App\Http\Controllers\Admin\VerifikasiController as AdminVerifikasiController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\VerifikasiWhatsAppController;
 use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Client\FavoritController as ClientFavoritController;
@@ -47,6 +48,14 @@ Route::middleware('guest')->group(function () {
         ->whereIn('kategori', ['art', 'baby_sitter', 'perawat_lansia'])
         ->name('register.pekerja.form');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+    // Verifikasi nomor WhatsApp (OTP) sebelum akun dibuat
+    Route::get('/register/verifikasi', [VerifikasiWhatsAppController::class, 'show'])->name('register.verifikasi');
+    Route::post('/register/verifikasi', [VerifikasiWhatsAppController::class, 'verifikasi'])
+        ->middleware('throttle:15,1')->name('register.verifikasi.post');
+    Route::post('/register/verifikasi/kirim-ulang', [VerifikasiWhatsAppController::class, 'kirimUlang'])
+        ->middleware('throttle:5,1')->name('register.verifikasi.kirim-ulang');
+    Route::get('/register/verifikasi/ubah-nomor', [VerifikasiWhatsAppController::class, 'ubahNomor'])->name('register.verifikasi.ubah');
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');

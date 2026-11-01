@@ -24,6 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
     aturSkorBar();
     aturFavoritPop();
 
+    // Halaman verifikasi nomor WhatsApp (OTP) registrasi
+    const otp = document.querySelector('[data-otp]');
+    if (otp) import('./verifikasi-otp.js').then((m) => m.mulaiVerifikasiOtp(otp));
+
     // Animasi berat (GSAP, Lenis, Swiper) hanya dimuat di halaman publik / login / registrasi
     if (document.body.dataset.halaman === 'publik') {
         import('./animasi-publik.js')
