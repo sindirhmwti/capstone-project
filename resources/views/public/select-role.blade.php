@@ -13,7 +13,7 @@
 @php
     $pilihan = [
         [route('register.klien'), 'untuk-keluarga', 'Ibu memeluk anaknya di rumah', 'Klien', 'Saya ingin mencari dan memesan pekerja: ART, Baby Sitter, atau Perawat Lansia.', ['Katalog pekerja terverifikasi', 'Rekomendasi sesuai kriteria rumah', 'Pesan & simpan favorit'], 'Daftar sebagai Klien'],
-        [route('register.pekerja'), 'untuk-pekerja', 'Perempuan tersenyum menggunakan laptop di ruangan penuh tanaman', 'Calon Pekerja', 'Saya ingin menawarkan jasa sebagai ART, Baby Sitter, atau Perawat Lansia.', ['Profil & kriteria khusus', 'Unggah KTP & sertifikat', 'Pantau status verifikasi'], 'Daftar sebagai Pekerja'],
+        [route('register.pekerja'), 'untuk-pekerja', 'Pekerja rumah tangga berseragam tersenyum sambil memegang kemoceng dan botol semprot', 'Calon Pekerja', 'Saya ingin menawarkan jasa sebagai ART, Baby Sitter, atau Perawat Lansia.', ['Profil & kriteria khusus', 'Unggah KTP & sertifikat', 'Pantau status verifikasi'], 'Daftar sebagai Pekerja'],
     ];
 @endphp
 
@@ -24,7 +24,7 @@
                 <x-icon name="check" class="centang-pop h-4 w-4" stroke="3" />
             </span>
             <div class="-mx-2 -mt-2 overflow-hidden rounded-2xl">
-                <img src="{{ asset('images/photos/' . $gambar . '.webp') }}" alt="{{ $alt }}" loading="lazy" width="1000" height="667" class="aspect-[16/10] w-full object-cover transition duration-700 group-hover:scale-110">
+                <img src="{{ asset('images/photos/' . $gambar . '.webp') }}" alt="{{ $alt }}" loading="lazy" width="1000" height="667" class="aspect-[16/10] w-full object-cover transition duration-700 group-hover:scale-110 {{ $gambar === 'untuk-pekerja' ? 'object-[50%_34%]' : '' }}">
             </div>
             <h2 class="mt-5 text-2xl font-extrabold text-ink">{{ $judul }}</h2>
             <p class="mt-2 text-[15px] text-muted">{{ $teks }}</p>

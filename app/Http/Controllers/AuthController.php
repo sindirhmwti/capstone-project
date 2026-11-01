@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Notifikasi;
 use App\Models\Pengguna;
 use App\Models\ProfilPekerja;
+use App\Services\WhatsAppOtpService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -90,17 +90,35 @@ class AuthController extends Controller
             ->with('success', 'Selamat datang kembali, ' . $pengguna->nama . '!');
     }
 
-    /** Memproses registrasi klien maupun calon pekerja. */
-    public function register(Request $request)
+    /**
+     * Memproses formulir registrasi klien maupun calon pekerja.
+     * Akun BELUM dibuat di sini: data disimpan sementara di session (kata sandi sudah di-hash),
+     * lalu pengguna diarahkan ke halaman verifikasi nomor WhatsApp (OTP).
+     * Akun dibuat oleh VerifikasiWhatsAppController setelah kode benar.
+     */
+    public function register(Request $request, WhatsAppOtpService $otp)
     {
         $isPekerja = $request->input('peran') === Pengguna::PERAN_PEKERJA;
+
+        // Rapikan penulisan nomor (spasi, tanda hubung, titik, kurung) sebelum divalidasi
+        $request->merge(['no_telepon' => preg_replace('/[\s\-().]/', '', (string) $request->input('no_telepon'))]);
 
         $aturan = [
             // Peran admin ditolak walaupun formulir dimanipulasi
             'peran' => ['required', Rule::in([Pengguna::PERAN_KLIEN, Pengguna::PERAN_PEKERJA])],
             'nama' => ['required', 'string', 'min:3', 'max:100'],
             'email' => ['required', 'email', 'max:100', 'unique:pengguna,email'],
-            'no_telepon' => ['required', 'regex:/^(\+62|62|0)8[0-9]{7,12}$/'],
+            'no_telepon' => [
+                'required',
+                'regex:/^(\+62|62|0)8[0-9]{7,12}$/',
+                function (string $atribut, mixed $nilai, \Closure $gagal) {
+                    // Cek semua variasi penulisan (628..., +628..., 08...) agar data lama ikut diperiksa
+                    $nomor = WhatsAppOtpService::normalisasi($nilai);
+                    if (Pengguna::whereIn('no_telepon', WhatsAppOtpService::variasi($nomor))->exists()) {
+                        $gagal('Nomor WhatsApp ini sudah terdaftar pada akun lain.');
+                    }
+                },
+            ],
             'kata_sandi' => ['required', 'confirmed', Password::min(8)->letters()->numbers()],
             'terms' => ['accepted'],
         ];
@@ -115,52 +133,28 @@ class AuthController extends Controller
         }
 
         $data = $request->validate($aturan, [
-            'no_telepon.regex' => 'Nomor telepon harus diawali 08 / 62 / +62 dan berisi 10-15 angka.',
+            'no_telepon.required' => 'Nomor WhatsApp wajib diisi.',
+            'no_telepon.regex' => 'Nomor WhatsApp harus diawali 08 / 62 / +62 dan berisi 10-15 angka.',
             'terms.accepted' => 'Anda harus menyetujui Syarat & Ketentuan.',
         ]);
 
-        $pengguna = DB::transaction(function () use ($data, $isPekerja) {
-            $pengguna = Pengguna::create([
-                'nama' => $data['nama'],
-                'email' => Str::lower($data['email']),
-                'no_telepon' => $data['no_telepon'],
-                'kata_sandi' => $data['kata_sandi'],
-                'peran' => $data['peran'],
-                'status_akun' => 'aktif',
-            ]);
+        // Data sementara: email huruf kecil, nomor seragam 628..., kata sandi sudah di-hash (bukan teks asli)
+        unset($data['kata_sandi_confirmation'], $data['terms']);
+        $data['email'] = Str::lower($data['email']);
+        $data['no_telepon'] = WhatsAppOtpService::normalisasi($data['no_telepon']);
+        $data['kata_sandi'] = Hash::make($data['kata_sandi']);
 
-            if ($isPekerja) {
-                $pengguna->profilPekerja()->create([
-                    'kategori_pekerjaan' => $data['kategori_pekerjaan'],
-                    'alamat' => $data['alamat'],
-                    'keterampilan' => $data['keterampilan'] ?? null,
-                    'deskripsi_profil' => $data['deskripsi_profil'] ?? null,
-                    'status_verifikasi' => 'belum_lengkap',
-                ]);
+        $request->session()->put(VerifikasiWhatsAppController::SESI, [
+            'data' => $data,
+            'dibuat' => now()->timestamp,
+            'kirim_terakhir' => now()->timestamp,
+            'percobaan' => 0,
+            'kunci_sampai' => 0,
+        ]);
 
-                Notifikasi::kirim($pengguna->id_pengguna, 'Selamat datang di Temukerja',
-                    'Lengkapi profil, kriteria khusus, dan dokumen persyaratan Anda agar dapat diverifikasi admin.');
-                Notifikasi::kirimKeAdmin('Calon pekerja baru mendaftar',
-                    $pengguna->nama . ' mendaftar sebagai ' . ProfilPekerja::KATEGORI_SINGKAT[$data['kategori_pekerjaan']] . '.');
-            } else {
-                Notifikasi::kirim($pengguna->id_pengguna, 'Selamat datang di Temukerja',
-                    'Akun klien Anda berhasil dibuat. Silakan cari pekerja yang sesuai kebutuhan Anda.');
-            }
+        $otp->kirimKode($data['no_telepon']);
 
-            return $pengguna;
-        });
-
-        Auth::login($pengguna);
-        $request->session()->regenerate();
-
-        // Baby Sitter dan Perawat Lansia langsung diarahkan untuk mengunggah dokumen
-        if ($isPekerja && in_array($data['kategori_pekerjaan'], ProfilPekerja::WAJIB_SERTIFIKAT, true)) {
-            return redirect()->route('worker.verification')
-                ->with('success', 'Registrasi berhasil! Silakan unggah KTP dan sertifikat pelatihan untuk diverifikasi admin.');
-        }
-
-        return redirect()->route($pengguna->routeDashboard())
-            ->with('success', 'Registrasi berhasil! Selamat datang di Temukerja.');
+        return redirect()->route('register.verifikasi');
     }
 
     /** Mengakhiri sesi pengguna. */
