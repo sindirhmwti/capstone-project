@@ -78,7 +78,9 @@ class KatalogController extends Controller
     public function show(Request $request, ProfilPekerja $pekerja, RekomendasiPekerja $rekomendasi)
     {
         $tersedia = ProfilPekerja::tampilDiKatalog()->whereKey($pekerja->getKey())->exists();
-        if (! $tersedia) {
+        // Pekerja yang sedang tersalurkan: detail tetap dapat dibuka (mis. dari Favorit) dengan keterangan tidak tersedia
+        $tersalurkan = ! $tersedia && $pekerja->status_verifikasi === 'terverifikasi' && $pekerja->sedangTersalurkan();
+        if (! $tersedia && ! $tersalurkan) {
             return redirect()->route('client.workers')->with('error', 'Data profil pekerja tidak tersedia.');
         }
 
@@ -94,6 +96,7 @@ class KatalogController extends Controller
             'skor' => $skor,
             'favorit' => $request->user()->favorit()->where('id_pekerja', $pekerja->id_pekerja)->exists(),
             'jumlahPenyaluran' => $pekerja->pemesanan()->whereIn('status_pemesanan', ['disetujui', 'selesai'])->count(),
+            'tersalurkan' => $tersalurkan,
         ]);
     }
 }

@@ -4,6 +4,10 @@
 
 @include('components.page-header', ['crumb' => 'Calon Pekerja / Edit Profil', 'title' => 'Edit Profil', 'subtitle' => 'Perbarui data diri dan pengalaman kerja Anda. Kolom bertanda * wajib diisi.'])
 
+{{-- Foto profil (wajib untuk calon pekerja), form terpisah dari data profil --}}
+<x-form-foto-profil :pengguna="$pengguna" :aksi="route('worker.profile.photo')" wajib class="mb-6"
+    panduan="Gunakan foto wajah Anda sendiri yang jelas, menghadap depan, tanpa kacamata hitam/masker. Foto ini akan dilihat klien." />
+
 <form method="POST" action="{{ route('worker.profile.update') }}" class="grid gap-6 xl:grid-cols-3" novalidate>
     @csrf
     @method('PUT')
@@ -46,7 +50,7 @@
     <aside class="space-y-6 xl:sticky xl:top-28 xl:h-fit">
         <div class="card reveal overflow-hidden">
             <div class="bg-gradient-to-br from-primary-dark to-primary p-6 text-center text-white">
-                <x-avatar :name="$pengguna->nama" size="xl" class="ring-4 ring-white/30" />
+                <x-avatar :name="$pengguna->nama" :src="$pengguna->urlFotoProfil()" size="xl" class="ring-4 ring-white/30" />
                 <p class="mt-3 text-lg font-extrabold">{{ $pengguna->nama }}</p>
                 <p class="text-sm text-white/75">{{ $profil->labelKategori() }}</p>
             </div>

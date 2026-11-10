@@ -40,6 +40,18 @@
         </form>
 
         <div class="card card-body text-[15px]">
+            <h2 class="card-title mb-4">Ketersediaan</h2>
+            @if ($profil->penyaluranAktif)
+                <div class="flex items-center justify-between"><span class="text-muted">Status</span><x-badge color="blue">Tersalurkan</x-badge></div>
+                <p class="mt-3 text-muted">Bekerja di <strong class="text-ink">{{ $profil->penyaluranAktif->klien->nama }}</strong> sejak {{ $profil->penyaluranAktif->labelTanggalMulai() }}. Tidak tampil di katalog klien.</p>
+                <a href="{{ route('admin.placements', ['cari' => $profil->pengguna->nama]) }}" class="btn-secondary btn-sm mt-4 w-full">Kelola penyaluran</a>
+            @else
+                <div class="flex items-center justify-between"><span class="text-muted">Status</span><x-badge color="green">Tersedia</x-badge></div>
+                <p class="mt-3 text-muted">Tidak sedang tersalurkan.</p>
+            @endif
+        </div>
+
+        <div class="card card-body text-[15px]">
             <h2 class="card-title mb-4">Verifikasi</h2>
             <div class="flex items-center justify-between"><span class="text-muted">Status</span><x-badge :status="$profil->status_verifikasi">{{ $profil->labelStatus() }}</x-badge></div>
             @if ($profil->verifikator)

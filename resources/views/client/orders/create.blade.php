@@ -44,7 +44,7 @@
         <div class="card bg-mint-soft p-5">
             <p class="eyebrow">Pekerja dipilih</p>
             <div class="mt-3 flex items-center gap-3">
-                <x-avatar :name="$profil->pengguna->nama" size="lg" />
+                <x-avatar :name="$profil->pengguna->nama" :src="$profil->pengguna->urlFotoProfil()" size="lg" />
                 <div class="min-w-0">
                     <p class="truncate font-bold text-ink">{{ $profil->pengguna->nama }}</p>
                     <p class="text-sm text-muted">{{ $profil->labelKategori() }} · {{ $profil->alamat }}</p>

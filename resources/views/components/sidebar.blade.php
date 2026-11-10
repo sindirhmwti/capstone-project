@@ -50,7 +50,7 @@
             <x-icon name="panel-left" class="h-5 w-5 rotate-180" />
         </button>
         <div class="flex items-center gap-3 rounded-2xl bg-white/[0.07] p-3 [.sidebar-ciut_&]:lg:justify-center [.sidebar-ciut_&]:lg:bg-transparent [.sidebar-ciut_&]:lg:p-0">
-            <x-avatar :name="$pengguna?->nama ?? 'Pengguna'" size="md" class="ring-white/20" />
+            <x-avatar :name="$pengguna?->nama ?? 'Pengguna'" :src="$pengguna?->urlFotoProfil()" size="md" class="ring-white/20" />
             <div class="min-w-0 flex-1 leading-tight" data-label>
                 <p class="truncate text-[15px] font-bold text-white">{{ $pengguna?->nama }}</p>
                 <p class="mt-0.5 truncate text-xs text-white/60">{{ $pengguna?->email }}</p>

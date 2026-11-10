@@ -17,6 +17,7 @@ class VerifikasiController extends Controller
         $profil = $this->profil($request)->load('dokumen');
 
         $syarat = [
+            'Foto profil sudah diunggah' => $request->user()->punyaFotoProfil(),
             'Data pribadi & profil lengkap' => $profil->cekKelengkapanProfil(),
             'Kriteria khusus sudah diisi' => $profil->cekKriteriaTerisi(),
             'Dokumen wajib sudah diunggah' => $profil->cekKelengkapanDokumen(),
@@ -77,6 +78,11 @@ class VerifikasiController extends Controller
 
         if (! $profil->bisaDiajukan()) {
             return back()->with('error', 'Data Anda sudah diajukan dan berstatus "' . $profil->labelStatus() . '".');
+        }
+
+        // Foto profil wajib bagi calon pekerja sebelum mengajukan verifikasi
+        if (! $request->user()->punyaFotoProfil()) {
+            return back()->with('error', 'Unggah foto profil terlebih dahulu sebelum mengajukan verifikasi.');
         }
 
         if (! $profil->cekKelengkapanProfil() || ! $profil->cekKriteriaTerisi() || ! $profil->cekKelengkapanDokumen()) {

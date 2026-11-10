@@ -3,10 +3,39 @@
 @section('content')
 
 <x-banner-sambutan :eyebrow="$profil->labelKategori()" :title="'Selamat datang, ' . $pengguna->nama . '!'"
-                   text="Lengkapi profil agar keahlian Anda mudah ditemukan klien setelah diverifikasi admin.">
+                   text="Lengkapi profil agar keahlian Anda mudah ditemukan klien setelah diverifikasi admin."
+                   foto="untuk-pekerja" posisi-foto="object-[50%_18%]" label-foto="Tampil di katalog setelah diverifikasi">
     <a href="{{ route('worker.profile.edit') }}" class="btn-sun"><x-icon name="pencil" class="h-5 w-5" /> Lengkapi Profil</a>
     <a href="{{ route('worker.verification') }}" class="btn-outline-light">Status Verifikasi</a>
 </x-banner-sambutan>
+
+{{-- Sedang tersalurkan: profil tidak tampil di katalog selama masa kerja --}}
+@if ($penyaluranAktif)
+    <section class="reveal mb-6 flex flex-col gap-4 rounded-3xl border-2 border-green-200 bg-green-50 p-5 sm:flex-row sm:items-center sm:p-6">
+        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-green-600 text-white"><x-icon name="briefcase" class="h-6 w-6" /></span>
+        <div class="min-w-0 flex-1">
+            <p class="text-lg font-extrabold text-green-900">Anda sedang bekerja sejak {{ $penyaluranAktif->labelTanggalMulai() }}.</p>
+            <p class="mt-0.5 text-[15px] text-green-800">Profil Anda tidak ditampilkan di katalog selama masa kerja. Profil akan tampil kembali setelah admin mengakhiri masa kerja.</p>
+        </div>
+    </section>
+@endif
+
+{{-- Pengingat foto profil wajib (termasuk akun lama yang sudah terverifikasi) --}}
+@unless ($pengguna->punyaFotoProfil())
+    <section class="reveal mb-6 flex flex-col gap-4 rounded-3xl border-2 border-amber-200 bg-sun-soft p-5 sm:flex-row sm:items-center sm:p-6">
+        <x-avatar :name="$pengguna->nama" size="lg" class="ring-4 ring-white" />
+        <div class="min-w-0 flex-1">
+            <p class="text-lg font-extrabold text-ink">Foto profil belum diunggah</p>
+            <p class="mt-0.5 text-[15px] text-amber-900">Foto profil wajib diunggah agar profil Anda dapat diverifikasi dan tampil di katalog.</p>
+        </div>
+        <a href="{{ route('worker.profile.edit') }}#foto-profil" class="btn-primary shrink-0"><x-icon name="upload" class="h-5 w-5" /> Unggah Foto</a>
+    </section>
+@endunless
+
+{{-- Undangan interview dari pesanan yang disetujui (hanya milik pekerja ini) --}}
+@foreach ($undanganInterview as $jadwalInterview)
+    <x-banner-interview :jadwal="$jadwalInterview" pihak="pekerja" class="mb-6" />
+@endforeach
 
 {{-- Ringkasan --}}
 <div class="mb-6 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">

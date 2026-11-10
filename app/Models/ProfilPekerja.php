@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ProfilPekerja extends Model
 {
@@ -98,13 +99,37 @@ class ProfilPekerja extends Model
         return $this->hasMany(Pemesanan::class, 'id_pekerja', 'id_pekerja');
     }
 
+    public function penyaluran(): HasMany
+    {
+        return $this->hasMany(Penyaluran::class, 'id_pekerja', 'id_pekerja');
+    }
+
+    /** Penyaluran yang sedang berjalan (pekerja sedang bekerja di klien). */
+    public function penyaluranAktif(): HasOne
+    {
+        return $this->hasOne(Penyaluran::class, 'id_pekerja', 'id_pekerja')
+            ->where('status', 'aktif')->latestOfMany('id_penyaluran');
+    }
+
     /* ---------- Scope ---------- */
 
-    /** Pekerja yang boleh tampil di katalog klien: terverifikasi dan akun aktif. */
+    /**
+     * Pekerja yang boleh tampil di katalog klien: terverifikasi, akun aktif,
+     * dan TIDAK sedang tersalurkan (tidak punya penyaluran berstatus aktif).
+     */
     public function scopeTampilDiKatalog(Builder $query): Builder
     {
         return $query->where('status_verifikasi', 'terverifikasi')
-            ->whereHas('pengguna', fn ($q) => $q->where('status_akun', 'aktif'));
+            ->whereHas('pengguna', fn ($q) => $q->where('status_akun', 'aktif'))
+            ->whereDoesntHave('penyaluran', fn ($q) => $q->where('status', 'aktif'));
+    }
+
+    /** Pekerja sedang bekerja di klien (penyaluran aktif). */
+    public function sedangTersalurkan(): bool
+    {
+        return $this->relationLoaded('penyaluranAktif')
+            ? $this->penyaluranAktif !== null
+            : $this->penyaluran()->where('status', 'aktif')->exists();
     }
 
     /* ---------- Operasi (sesuai Class Diagram) ---------- */

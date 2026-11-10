@@ -1,9 +1,11 @@
 {{--
-    Avatar inisial nama dengan latar warna lembut (pengganti foto profil).
-    Warna dipilih tetap berdasarkan nama agar setiap orang konsisten.
+    Avatar pengguna: foto profil bulat (object-cover, tidak gepeng) bila ada,
+    atau inisial nama dengan latar warna lembut bila foto kosong.
+    Warna inisial dipilih tetap berdasarkan nama agar setiap orang konsisten.
     Pemakaian: <x-avatar :name="$nama" size="lg" />
+               <x-avatar :name="$pengguna->nama" :src="$pengguna->urlFotoProfil()" size="lg" />
 --}}
-@props(['name' => '', 'size' => 'md'])
+@props(['name' => '', 'size' => 'md', 'src' => null])
 
 @php
     $kata = preg_split('/\s+/', trim($name)) ?: [];
@@ -23,7 +25,14 @@
         'lg' => 'h-14 w-14 text-lg',
         'xl' => 'h-20 w-20 text-2xl',
         '2xl' => 'h-24 w-24 text-3xl',
+        '3xl' => 'h-32 w-32 text-4xl',
+        '4xl' => 'h-48 w-48 text-5xl',
     ][$size] ?? 'h-11 w-11 text-sm';
 @endphp
 
-<span {{ $attributes->merge(['class' => "inline-flex shrink-0 items-center justify-center rounded-full font-bold ring-2 ring-white $warna $ukuran"]) }} aria-hidden="true">{{ $inisial }}</span>
+@if (filled($src))
+    <img src="{{ $src }}" alt="{{ $attributes->get('alt', '') }}" loading="lazy" decoding="async"
+         {{ $attributes->except('alt')->merge(['class' => "inline-block shrink-0 rounded-full bg-canvas object-cover ring-2 ring-white $ukuran"]) }}>
+@else
+    <span {{ $attributes->except('alt')->merge(['class' => "inline-flex shrink-0 items-center justify-center rounded-full font-bold ring-2 ring-white $warna $ukuran"]) }} aria-hidden="true">{{ $inisial }}</span>
+@endif

@@ -9,6 +9,12 @@
     'aksi' => '<a href="' . route('client.workers') . '" class="btn-secondary"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg> Kembali ke katalog</a>',
 ])
 
+@if ($tersalurkan)
+    <x-alert type="info" title="Pekerja ini sudah tersalurkan dan tidak tersedia" class="mb-6">
+        {{ $profil->pengguna->nama }} sedang bekerja di klien lain sehingga tidak dapat dipesan. Silakan pilih pekerja lain di katalog.
+    </x-alert>
+@endif
+
 <div class="grid gap-6 xl:grid-cols-3">
     <div class="xl:col-span-2">
         @include('components.detail-pekerja', ['tampilKontak' => false, 'tampilDokumen' => false, 'sorotKriteria' => $idKriteria])
@@ -46,7 +52,11 @@
                 </div>
 
                 <div class="mt-5 space-y-3">
-                    <a href="{{ route('client.orders.create', $profil) }}" class="btn-primary btn-lg w-full"><x-icon name="clipboard" class="h-5 w-5" /> Pesan Pekerja</a>
+                    @if ($tersalurkan)
+                        <span class="btn-lg flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-gray-100 font-bold text-gray-500" aria-disabled="true"><x-icon name="lock" class="h-5 w-5" /> Sudah Tersalurkan</span>
+                    @else
+                        <a href="{{ route('client.orders.create', $profil) }}" class="btn-primary btn-lg w-full"><x-icon name="clipboard" class="h-5 w-5" /> Pesan Pekerja</a>
+                    @endif
                     <form method="POST" action="{{ $favorit ? route('client.favorites.destroy', $profil) : route('client.favorites.store', $profil) }}">
                         @csrf
                         @if ($favorit) @method('DELETE') @endif

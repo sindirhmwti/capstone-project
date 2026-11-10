@@ -5,7 +5,7 @@
 @include('components.page-header', [
     'crumb' => 'Admin / Laporan Penyaluran',
     'title' => 'Laporan Penyaluran',
-    'subtitle' => 'Penyaluran dihitung dari pemesanan berstatus Disetujui dan Selesai.',
+    'subtitle' => 'Penyaluran dihitung dari pekerja yang tersalurkan (hasil interview cocok, pesanan Selesai) berdasarkan tanggal mulai kerja.',
     'aksi' => $penyaluran->isEmpty()
         ? '<span class="btn-primary opacity-50 cursor-not-allowed" aria-disabled="true">Cetak Laporan</span>'
         : '<a href="' . route('admin.reports.print', request()->only('periode', 'kategori')) . '" target="_blank" rel="noopener" class="btn-primary"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg> Cetak Laporan</a>',
@@ -45,7 +45,7 @@
     @foreach (\App\Models\ProfilPekerja::KATEGORI_SINGKAT as $kode => $label)
         <x-stat :icon="$warnaKat[$kode][1] ?? 'users'" :label="$label" :value="$perKategori[$kode] ?? 0" :tone="$warnaKat[$kode][0] ?? 'brand'" />
     @endforeach
-    <x-stat icon="award" label="Selesai" :value="$perStatus['selesai'] ?? 0" tone="violet" :note="($perStatus['disetujui'] ?? 0) . ' masih berjalan'" />
+    <x-stat icon="briefcase" label="Masih bekerja" :value="$perStatus['aktif'] ?? 0" tone="violet" :note="($perStatus['berakhir'] ?? 0) . ' masa kerja berakhir'" />
 </div>
 
 <div class="card overflow-hidden">
@@ -54,7 +54,7 @@
     @else
         <div class="table-wrap">
             <table class="table-base">
-                <thead><tr><th>Nama pekerja</th><th>Jenis pekerjaan</th><th>Klien</th><th>Lokasi</th><th>Status</th><th>Tanggal</th></tr></thead>
+                <thead><tr><th>Nama pekerja</th><th>Jenis pekerjaan</th><th>Klien</th><th>Lokasi</th><th>Status penyaluran</th><th>Mulai kerja</th></tr></thead>
                 <tbody>
                     @foreach ($penyaluran as $o)
                         <tr>
@@ -62,8 +62,14 @@
                             <td>{{ $o->profilPekerja->labelKategori() }}</td>
                             <td>{{ $o->klien->nama }}</td>
                             <td>{{ $o->lokasi_kerja ?: $o->profilPekerja->alamat }}</td>
-                            <td><x-badge :status="$o->status_pemesanan">{{ $o->labelStatus() }}</x-badge></td>
-                            <td class="text-muted">{{ $o->tanggal_pemesanan->translatedFormat('d M Y') }}</td>
+                            <td>
+                                @if ($o->penyaluran)
+                                    <x-badge :color="$o->penyaluran->isAktif() ? 'blue' : 'gray'">{{ $o->penyaluran->isAktif() ? 'Aktif' : 'Berakhir' }}</x-badge>
+                                @else
+                                    <x-badge :status="$o->status_pemesanan">{{ $o->labelStatus() }}</x-badge>
+                                @endif
+                            </td>
+                            <td class="text-muted">{{ $o->tanggalPenyaluran()->translatedFormat('d M Y') }}</td>
                         </tr>
                     @endforeach
                 </tbody>

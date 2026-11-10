@@ -145,6 +145,10 @@ class PemesananController extends Controller
     /** Mengembalikan pesan bila pekerja tidak dapat dipesan, atau null bila tersedia. */
     private function alasanTidakTersedia(Request $request, ProfilPekerja $pekerja): ?string
     {
+        if ($pekerja->sedangTersalurkan()) {
+            return 'Pekerja ini sudah tersalurkan dan tidak tersedia.';
+        }
+
         if (! ProfilPekerja::tampilDiKatalog()->whereKey($pekerja->getKey())->exists()) {
             return 'Pekerja tidak tersedia sehingga tidak dapat dipesan.';
         }

@@ -28,6 +28,14 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // WhatsApp untuk undangan & konfirmasi interview
+    'whatsapp' => [
+        // Nomor admin/kantor (format 62xxxxxxxxxx) tujuan tombol "Konfirmasi via WhatsApp"
+        'admin' => env('ADMIN_WHATSAPP'),
+        // Driver kirimPesan(): "demo" = catat ke log. Disiapkan untuk API asli (mis. Fonnte) nanti.
+        'driver' => env('WHATSAPP_DRIVER', env('OTP_DRIVER', 'demo')),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

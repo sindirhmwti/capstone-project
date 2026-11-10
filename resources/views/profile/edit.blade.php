@@ -4,6 +4,10 @@
 
 @include('components.page-header', ['crumb' => $crumb . ' / Edit Profil', 'title' => 'Edit Profil', 'subtitle' => 'Perbarui informasi akun Anda. Kolom bertanda * wajib diisi.'])
 
+{{-- Foto profil (opsional untuk klien & admin), form terpisah dari data akun --}}
+@php $awalan = $pengguna->isAdmin() ? 'admin' : 'client'; @endphp
+<x-form-foto-profil :pengguna="$pengguna" :aksi="route($awalan . '.profile.photo')" :aksi-hapus="route($awalan . '.profile.photo.destroy')" class="mb-6" />
+
 <form method="POST" action="{{ route($routeUpdate) }}" class="grid gap-6 xl:grid-cols-3" novalidate>
     @csrf
     @method('PUT')
@@ -28,7 +32,7 @@
     <aside class="space-y-6 xl:sticky xl:top-28 xl:h-fit">
         <div class="card reveal overflow-hidden">
             <div class="bg-gradient-to-br from-primary-dark to-primary p-6 text-center text-white">
-                <x-avatar :name="$pengguna->nama" size="xl" class="ring-4 ring-white/30" />
+                <x-avatar :name="$pengguna->nama" :src="$pengguna->urlFotoProfil()" size="xl" class="ring-4 ring-white/30" />
                 <p class="mt-3 text-lg font-extrabold">{{ $pengguna->nama }}</p>
                 <p class="text-sm text-white/75">{{ $pengguna->isAdmin() ? 'Admin' : 'Klien' }}</p>
             </div>

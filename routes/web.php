@@ -1,13 +1,16 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\InterviewController as AdminInterviewController;
 use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 use App\Http\Controllers\Admin\PekerjaController as AdminPekerjaController;
 use App\Http\Controllers\Admin\PemesananController as AdminPemesananController;
+use App\Http\Controllers\Admin\PenyaluranController as AdminPenyaluranController;
 use App\Http\Controllers\Admin\VerifikasiController as AdminVerifikasiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VerifikasiWhatsAppController;
 use App\Http\Controllers\DokumenController;
+use App\Http\Controllers\FotoProfilController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Client\FavoritController as ClientFavoritController;
 use App\Http\Controllers\Client\KatalogController as ClientKatalogController;
@@ -88,6 +91,22 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'peran:admin'])->gro
     Route::get('/orders/{pemesanan}', [AdminPemesananController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{pemesanan}/status', [AdminPemesananController::class, 'updateStatus'])->name('orders.status');
 
+    // Setujui pesanan + jadwal interview, ubah jadwal, undangan via WhatsApp, dan catat jawaban
+    Route::post('/orders/{pemesanan}/setujui', [AdminInterviewController::class, 'setujui'])->name('orders.approve');
+    Route::put('/orders/{pemesanan}/interview', [AdminInterviewController::class, 'simpanJadwal'])->name('orders.interview');
+    Route::post('/orders/{pemesanan}/interview/{pihak}/undangan', [AdminInterviewController::class, 'kirimUndangan'])
+        ->whereIn('pihak', ['klien', 'pekerja'])->name('orders.interview.invite');
+    Route::post('/orders/{pemesanan}/interview/{pihak}/tandai', [AdminInterviewController::class, 'tandai'])
+        ->whereIn('pihak', ['klien', 'pekerja'])->name('orders.interview.mark');
+
+    // Hasil interview: cocok (salurkan pekerja) / tidak cocok
+    Route::post('/orders/{pemesanan}/interview/hasil/cocok', [AdminInterviewController::class, 'cocok'])->name('orders.interview.match');
+    Route::post('/orders/{pemesanan}/interview/hasil/tidak-cocok', [AdminInterviewController::class, 'tidakCocok'])->name('orders.interview.nomatch');
+
+    // Penyaluran pekerja
+    Route::get('/placements', [AdminPenyaluranController::class, 'index'])->name('placements');
+    Route::patch('/placements/{penyaluran}/akhiri', [AdminPenyaluranController::class, 'akhiri'])->name('placements.end');
+
     // Laporan penyaluran
     Route::get('/reports', [AdminLaporanController::class, 'index'])->name('reports');
     Route::get('/reports/print', [AdminLaporanController::class, 'cetak'])->name('reports.print');
@@ -100,6 +119,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'peran:admin'])->gro
     // Edit profil akun
     Route::get('/profile', [ProfilAkunController::class, 'edit'])->name('profile');
     Route::put('/profile', [ProfilAkunController::class, 'update'])->name('profile.update');
+    Route::post('/profile/photo', [FotoProfilController::class, 'update'])->name('profile.photo');
+    Route::delete('/profile/photo', [FotoProfilController::class, 'destroy'])->name('profile.photo.destroy');
 });
 
 /*
@@ -134,6 +155,8 @@ Route::prefix('client')->name('client.')->middleware(['auth', 'peran:klien'])->g
     // Edit profil akun
     Route::get('/profile', [ProfilAkunController::class, 'edit'])->name('profile');
     Route::put('/profile', [ProfilAkunController::class, 'update'])->name('profile.update');
+    Route::post('/profile/photo', [FotoProfilController::class, 'update'])->name('profile.photo');
+    Route::delete('/profile/photo', [FotoProfilController::class, 'destroy'])->name('profile.photo.destroy');
 });
 
 /*
@@ -147,6 +170,8 @@ Route::prefix('worker')->name('worker.')->middleware(['auth', 'peran:pekerja'])-
     Route::get('/profile', [WorkerProfilController::class, 'show'])->name('profile');
     Route::get('/profile/edit', [WorkerProfilController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [WorkerProfilController::class, 'update'])->name('profile.update');
+    // Foto profil wajib: hanya unggah / ganti (tidak ada hapus)
+    Route::post('/profile/photo', [FotoProfilController::class, 'update'])->name('profile.photo');
 
     Route::get('/criteria', [WorkerKriteriaController::class, 'edit'])->name('criteria');
     Route::put('/criteria', [WorkerKriteriaController::class, 'update'])->name('criteria.update');
