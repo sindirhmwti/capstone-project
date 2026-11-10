@@ -4,7 +4,7 @@
 
 <x-banner-sambutan eyebrow="temukerja · Kebutuhan bertemu keahlian" :title="'Selamat datang, ' . $pengguna->nama . '!'"
                    text="Temukan bantuan yang tepat untuk rumah Anda. Pilih kriteria khusus dan dapatkan rekomendasi pekerja dengan skor kecocokan."
-                   illustration="keluarga">
+                   foto="hero-keluarga" posisi-foto="object-[50%_40%]" label-foto="Pekerja diperiksa admin yayasan">
     <a href="{{ route('client.workers') }}" class="btn-sun btn-lg"><x-icon name="search" class="h-5 w-5" /> Cari Pekerja Sekarang</a>
     <a href="{{ route('client.orders') }}" class="btn-outline-light btn-lg">Riwayat Pesanan</a>
 </x-banner-sambutan>
@@ -69,7 +69,7 @@
         </div>
         @forelse ($pesananTerbaru as $o)
             <a href="{{ route('client.orders.show', $o) }}" class="flex items-center gap-3.5 border-b border-line px-5 py-4 transition-colors last:border-0 hover:bg-canvas sm:px-6">
-                <x-avatar :name="$o->profilPekerja->pengguna->nama" />
+                <x-avatar :name="$o->profilPekerja->pengguna->nama" :src="$o->profilPekerja->pengguna->urlFotoProfil()" />
                 <div class="min-w-0 flex-1">
                     <p class="truncate text-[15px] font-bold text-ink">{{ $o->profilPekerja->pengguna->nama }}</p>
                     <p class="text-sm text-muted">{{ $o->kode() }} · {{ $o->tanggal_pemesanan->diffForHumans() }}</p>

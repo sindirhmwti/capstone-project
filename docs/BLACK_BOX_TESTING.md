@@ -149,3 +149,79 @@ Keterangan hasil: **Berhasil** = output sesuai yang diharapkan.
 | SYS-01 | Seluruh route GET | 35 route × 4 kondisi (tamu, admin, klien, pekerja) | Tidak ada galat 500 / 404 / 419 yang tidak semestinya | Berhasil |
 | SYS-02 | Log aplikasi | `storage/logs/laravel.log` setelah seluruh pengujian | Tidak ada entri ERROR | Berhasil |
 | SYS-03 | Alur lengkap | Pekerja daftar → isi profil & kriteria → unggah dokumen → admin verifikasi → klien filter & rekomendasi → favorit → pesan → admin ubah status → notifikasi → laporan tercetak | Seluruh langkah berjalan tanpa galat | Berhasil |
+
+## 13. Undangan & Konfirmasi Interview via WhatsApp
+
+Prasyarat: `php artisan migrate` (tabel `jadwal_interview`), `ADMIN_WHATSAPP` diisi di `.env` untuk INT-11, `WHATSAPP_DRIVER=demo`.
+
+| ID | Skenario | Input | Output yang diharapkan | Hasil |
+|----|----------|-------|------------------------|-------|
+| INT-01 | Registrasi tetap memakai OTP WhatsApp demo | Daftar klien/pekerja, kode `0000` | Akun dibuat seperti sebelumnya | |
+| INT-02 | Admin menyetujui pesanan dengan jadwal | Detail pesanan → "Setujui & Jadwalkan Interview" → isi tanggal, waktu, metode, lokasi | Status "Disetujui", jadwal tersimpan, riwayat "Jadwal interview dibuat", notifikasi "Pesanan disetujui…" ke klien & pekerja, admin diarahkan ke panel interview | |
+| INT-03 | Validasi jadwal | Tanggal kemarin / metode Online dengan link bukan URL / lokasi kosong | Pesan galat pada kolom terkait, modal terbuka kembali, status tidak berubah | |
+| INT-04 | Dropdown status lama tidak bisa menyetujui | Paksa `status_pemesanan=disetujui` lewat form lama | Ditolak: "Gunakan tombol Setujui & Jadwalkan Interview…" | |
+| INT-05 | Kirim undangan ke klien | Klik "Kirim Undangan via WhatsApp" (kartu Klien) | Tab baru membuka `wa.me/62…` dengan pesan undangan klien berbaris; "Undangan dikirim pada …" tampil; tombol berubah "Kirim Ulang via WhatsApp"; log berisi `[WHATSAPP DEMO] Pesan ke 62…` | |
+| INT-06 | Kirim undangan ke calon pekerja | Klik tombol pada kartu Calon Pekerja | Pesan memuat "Anda dipilih oleh klien…" dan "Mohon membawa KTP asli dan sertifikat (jika ada)." | |
+| INT-07 | Nomor WhatsApp kosong (akun lama) | Kosongkan `no_telepon` salah satu pihak | Tombol nonaktif "Nomor WhatsApp belum tersedia" | |
+| INT-08 | Tandai Hadir | Klik "Tandai Hadir" | Badge hijau "Hadir", notifikasi "Kehadiran interview Anda telah dikonfirmasi admin", riwayat tercatat, banner pihak tsb hijau | |
+| INT-09 | Tandai Minta Ubah Jadwal | Isi catatan → simpan (coba juga tanpa catatan) | Tanpa catatan: galat wajib diisi. Dengan catatan: badge oranye + catatan tampil, banner "Permintaan ubah jadwal sedang ditinjau admin.", indikator daftar "Perlu dihubungi" | |
+| INT-10 | Tandai Tidak Merespons | Klik "Tandai Tidak Merespons" | Badge merah, notifikasi "Mohon balas undangan interview", indikator "Perlu dihubungi" | |
+| INT-11 | Tombol konfirmasi di sisi klien/pekerja | Login klien/pekerja → klik "Konfirmasi via WhatsApp" / "Minta Ubah Jadwal via WhatsApp" | Membuka `wa.me/<ADMIN_WHATSAPP>` dengan pesan "Halo Admin Temukerja, saya … Saya konfirmasi HADIR…" / "…MENGUBAH JADWAL… karena". Bila `ADMIN_WHATSAPP` kosong, tombol tidak tampil | |
+| INT-12 | Ubah jadwal | "Ubah Jadwal" → simpan jadwal baru | Konfirmasi kedua pihak kembali "Menunggu", waktu undangan di-reset, pesan berikutnya diawali "PERUBAHAN JADWAL INTERVIEW", banner "Jadwal interview diperbarui. Cek pesan WhatsApp terbaru dari admin." | |
+| INT-13 | 24 jam tanpa respons | Ubah `undangan_klien_dikirim_pada` menjadi > 24 jam lalu di database, status masih menunggu | Badge merah "Perlu dihubungi ulang" di kartu; indikator daftar "Perlu dihubungi" | |
+| INT-14 | Indikator daftar pesanan | Buka Kelola Pemesanan | Contoh: "2 belum diundang", "1 menunggu", "2/2 hadir", "Perlu dihubungi" | |
+| INT-15 | Banner klien | Detail & riwayat pesanan klien yang disetujui | Banner "Pesanan Anda telah disetujui. Admin akan mengirim undangan interview melalui WhatsApp ke nomor 0812****6789…" + ringkasan jadwal + status | |
+| INT-16 | Banner calon pekerja | Beranda pekerja | Banner "Anda dipilih oleh klien. Admin akan mengirim undangan…"; setelah dikirim: "Admin telah mengirim undangan interview melalui WhatsApp pada …" | |
+| INT-17 | Hak akses | Klien lain membuka detail pesanan; pekerja lain membuka beranda; klien/pekerja memanggil URL aksi admin | 403 / banner tidak tampil / 403 | |
+| INT-18 | Tidak memakai email | Seluruh skenario di atas | Tidak ada email yang terkirim (log tidak berisi email) | |
+
+## 14. Foto Profil
+
+Prasyarat: `php artisan migrate` (kolom `pengguna.foto_profil`) dan `php artisan storage:link`.
+
+| ID | Skenario | Input | Output yang diharapkan | Hasil |
+|----|----------|-------|------------------------|-------|
+| FTP-01 | Pekerja tanpa foto mengajukan verifikasi | Profil, kriteria, dan KTP lengkap; foto belum ada → buka Status Verifikasi | Tombol "Kirim untuk Verifikasi" nonaktif dengan keterangan "Unggah foto profil terlebih dahulu"; syarat "Foto profil sudah diunggah" belum tercentang | |
+| FTP-02 | Validasi server pengajuan | Kirim POST ajukan verifikasi tanpa foto (tombol dimanipulasi) | Ditolak: "Unggah foto profil terlebih dahulu sebelum mengajukan verifikasi." | |
+| FTP-03 | Unggah foto pekerja lalu ajukan | Edit Profil → Unggah Foto (JPG 400x400) → Simpan Foto → ajukan | Pesan "Foto profil berhasil diunggah"; pengajuan berhasil, status "Menunggu Verifikasi" | |
+| FTP-04 | Pratinjau sebelum disimpan | Pilih file gambar | Pratinjau bulat tampil (label "Pratinjau"), tombol "Simpan Foto" aktif, tombol "Batal" mengembalikan foto semula | |
+| FTP-05 | File bukan gambar | Unggah PDF | "File harus berupa gambar JPG, JPEG, PNG, atau WEBP." | |
+| FTP-06 | File > 2 MB | Unggah gambar 3 MB | "Ukuran foto maksimal 2 MB." | |
+| FTP-07 | Resolusi < 300x300 | Unggah gambar 200x250 | "Ukuran foto minimal 300 x 300 piksel." | |
+| FTP-08 | Format PNG / WEBP | Unggah PNG 300x300 dan WEBP 500x320 | Diterima | |
+| FTP-09 | Ganti foto | Unggah foto baru saat sudah punya foto | "Foto profil berhasil diganti"; file lama terhapus dari `storage/app/public/foto-profil`, nama file acak | |
+| FTP-10 | Pekerja menghapus foto | Lihat halaman Edit Profil pekerja; coba DELETE `/worker/profile/photo` | Tidak ada tombol "Hapus Foto" (hanya "Ganti Foto"); permintaan hapus ditolak, foto tetap ada | |
+| FTP-11 | Klien unggah, ganti, hapus foto | Edit Profil klien → "Foto Profil (opsional)" | Unggah/ganti berhasil; "Hapus Foto" menghapus file dan kembali ke avatar inisial | |
+| FTP-12 | Admin unggah foto | Edit Profil admin | Foto tersimpan dan tampil di topbar & sidebar admin | |
+| FTP-13 | Pengingat di beranda pekerja | Login pekerja tanpa foto (mis. `art@test.com`) | Banner "Foto profil wajib diunggah agar profil Anda dapat diverifikasi dan tampil di katalog" + tombol "Unggah Foto"; checklist memuat "Foto profil" | |
+| FTP-14 | Akun lama terverifikasi tanpa foto | Klien membuka katalog | Pekerja tetap tampil dengan avatar inisial | |
+| FTP-15 | Foto tampil di semua tempat | Setelah unggah: topbar/menu profil, sidebar, katalog klien, detail pekerja, daftar & detail pekerja admin, detail pesanan admin & klien, panel konfirmasi interview | Foto bulat (object-cover, tidak gepeng); avatar inisial bila kosong | |
+| FTP-16 | Pemeriksaan admin | Admin membuka Pemeriksaan Dokumen pekerja | Foto profil besar tampil di samping data & dokumen; bila tidak jelas admin dapat "Minta Perbaikan"/"Tolak" dengan catatan | |
+| FTP-17 | Akun lama tetap normal | Login `admin@shakaabadi.com`, `klien@test.com`, `art@test.com` | Login berhasil, alur lain tidak berubah | |
+
+## 15. Hasil Interview, Penyaluran & Ketersediaan Pekerja
+
+Prasyarat: `php artisan migrate` (kolom hasil di `jadwal_interview`, tabel `penyaluran`). Pesanan berstatus Disetujui dengan jadwal interview.
+
+| ID | Skenario | Input | Output yang diharapkan | Hasil |
+|----|----------|-------|------------------------|-------|
+| PNY-01 | Bagian Hasil Interview tampil | Admin membuka detail pesanan Disetujui yang memiliki jadwal | Tombol "Cocok - Salurkan Pekerja" (hijau) dan "Tidak Cocok" (merah) | |
+| PNY-02 | Catat Cocok | Klik "Cocok" → isi tanggal mulai kerja (+ catatan) → Salurkan | Pesanan "Selesai" dengan riwayat "Hasil interview cocok, pekerja tersalurkan"; data penyaluran "Aktif"; notifikasi "Penyaluran berhasil!…" ke klien dan "Selamat! Anda tersalurkan…" ke pekerja | |
+| PNY-03 | Pesanan lain otomatis dibatalkan | Pekerja punya pesanan lain berstatus Menunggu/Diproses dari klien lain, lalu PNY-02 | Pesanan lain "Dibatalkan" dengan alasan "Pekerja telah tersalurkan ke klien lain" (dibatalkan oleh admin), tercatat di riwayat, klien pemiliknya mendapat notifikasi | |
+| PNY-04 | Validasi Cocok | Tanggal mulai sebelum tanggal interview / kosong | Pesan galat, modal terbuka kembali, status tidak berubah | |
+| PNY-05 | Catat Tidak Cocok | Klik "Tidak Cocok" → isi alasan (coba juga kosong) | Kosong: galat "Alasan wajib diisi". Diisi: pesanan "Dibatalkan" dengan alasan "Hasil interview tidak cocok: …"; notifikasi ke klien & pekerja; pekerja tetap di katalog | |
+| PNY-06 | Kabari via WhatsApp | Setelah hasil dicatat → "Kabari Klien" / "Kabari Calon Pekerja" | wa.me terbuka dengan pesan sesuai hasil (cocok berisi tanggal mulai kerja; tidak cocok berisi info singkat dan sopan) | |
+| PNY-07 | Dropdown lama | Pilih status "Selesai" pada pesanan Disetujui | Opsi tidak tersedia; bila dipaksa: "Gunakan tombol Cocok - Salurkan Pekerja…" | |
+| PNY-08 | Katalog klien | Klien membuka katalog, mencari nama pekerja, memfilter kategori | Pekerja tersalurkan tidak tampil | |
+| PNY-09 | Detail pekerja tersalurkan | Buka URL detail pekerja tersalurkan | Keterangan "Pekerja ini sudah tersalurkan dan tidak tersedia", tombol pesan menjadi "Sudah Tersalurkan" | |
+| PNY-10 | Pesan lewat URL langsung | Buka `/client/workers/{id}/order` atau kirim form pesanan | Ditolak: "Pekerja ini sudah tersalurkan dan tidak tersedia." | |
+| PNY-11 | Favorit | Klien yang memfavoritkan pekerja membuka Favorit | Kartu pekerja tetap tampil dengan badge abu-abu "Sudah Tersalurkan" dan tombol Pesan nonaktif | |
+| PNY-12 | Beranda pekerja | Pekerja tersalurkan login | Banner hijau "Anda sedang bekerja sejak … Profil Anda tidak ditampilkan di katalog selama masa kerja."; status katalog "Tidak (sedang bekerja)" | |
+| PNY-13 | Statistik beranda publik | Buka beranda | Jumlah pekerja hanya menghitung pekerja tersedia | |
+| PNY-14 | Menu Penyaluran | Admin → menu "Penyaluran", cari nama, filter Aktif/Berakhir | Daftar pekerja (foto), kategori, klien, tanggal mulai, status | |
+| PNY-15 | Akhiri Penyaluran | Klik "Akhiri Penyaluran" → tanggal berakhir + catatan (coba juga tanggal sebelum mulai kerja) | Tanggal salah: galat. Benar: status "Berakhir", pekerja kembali tampil di katalog, notifikasi "Masa kerja Anda telah berakhir. Profil Anda kembali tampil di katalog." | |
+| PNY-16 | Ketersediaan di admin | Daftar & detail pekerja admin | Badge "Tersedia" (hijau) atau "Tersalurkan" (biru) + nama klien | |
+| PNY-17 | Laporan penyaluran | Laporan per periode / kategori dan versi cetak | Menghitung pesanan Selesai (pekerja tersalurkan) berdasarkan tanggal mulai kerja; pesanan Disetujui tidak dihitung; kartu "Masih bekerja" menghitung penyaluran aktif | |
+| PNY-18 | Hak akses | Klien/pekerja membuka `/admin/placements` atau mengirim aksi hasil interview | 403 | |
+| PNY-19 | Akun lama tetap normal | Login `admin@shakaabadi.com`, `klien@test.com`, `art@test.com` | Login berhasil, alur lain tidak berubah | |
+

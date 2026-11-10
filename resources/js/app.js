@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
     aturPilihBerkas();
     aturSkorBar();
     aturFavoritPop();
+    aturModalForm();
+    aturKirimWhatsApp();
+    aturFotoProfil();
 
     // Halaman verifikasi nomor WhatsApp (OTP) registrasi
     const otp = document.querySelector('[data-otp]');
@@ -351,6 +354,150 @@ function aturFavoritPop() {
             ikon.classList.remove('pop');
             void ikon.offsetWidth; // mulai ulang animasi
             ikon.classList.add('pop');
+        });
+    });
+}
+
+/* ─── Modal berisi formulir (mis. jadwal interview admin) ──────── */
+// [data-modal-buka="id"] membuka #id; [data-modal-tutup] / Escape / klik latar menutup.
+// Modal ber-atribut data-modal-otomatis langsung dibuka (dipakai saat ada error validasi).
+function aturModalForm() {
+    const semua = document.querySelectorAll('[data-modal-form]');
+    if (!semua.length) return;
+
+    const buka = (modal) => {
+        modal.classList.remove('hidden'); modal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+        requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.remove('modal-tutup')));
+        const pertama = modal.querySelector('.input-error') || modal.querySelector('input:not([type=hidden]):not([type=radio]), textarea');
+        setTimeout(() => pertama?.focus(), kurangiGerakan ? 0 : 220);
+    };
+    const tutup = (modal) => {
+        modal.classList.add('modal-tutup');
+        document.body.classList.remove('overflow-hidden');
+        setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, kurangiGerakan ? 0 : 200);
+    };
+
+    document.querySelectorAll('[data-modal-buka]').forEach((tombol) => {
+        const modal = document.getElementById(tombol.dataset.modalBuka);
+        if (!modal) return;
+        tombol.addEventListener('click', () => {
+            // Modal bersama (mis. "Akhiri Penyaluran"): aksi & isian diambil dari tombol yang diklik
+            if (tombol.dataset.modalAksi) {
+                const form = modal.querySelector('form');
+                if (form) form.action = tombol.dataset.modalAksi;
+                const id = modal.querySelector('[data-modal-isi-id]');
+                if (id) id.value = tombol.dataset.modalId || '';
+                modal.querySelectorAll('[data-modal-isi-nama]').forEach((el) => { el.textContent = tombol.dataset.modalNama || ''; });
+                const namaInput = modal.querySelector('[data-modal-isi-nama-input]');
+                if (namaInput) namaInput.value = tombol.dataset.modalNama || '';
+                const tanggal = modal.querySelector('[data-modal-isi-min]');
+                if (tanggal && tombol.dataset.modalMin) tanggal.min = tombol.dataset.modalMin;
+            }
+            buka(modal);
+        });
+    });
+
+    semua.forEach((modal) => {
+        modal.querySelectorAll('[data-modal-tutup]').forEach((el) => el.addEventListener('click', () => tutup(modal)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) tutup(modal); });
+
+        // Label & placeholder lokasi mengikuti metode (Offline = lokasi, Online = link meeting)
+        const input = modal.querySelector('[data-lokasi-input]');
+        const label = input ? modal.querySelector(`label[for="${input.id}"]`) : null;
+        const aturMetode = (nilai) => {
+            if (!input) return;
+            const online = nilai === 'online';
+            input.type = online ? 'url' : 'text';
+            input.placeholder = online ? 'https://meet.google.com/abc-defg-hij' : 'Contoh: Kantor PT Shaka Abadi Nusantara, Jl. ...';
+            if (label?.firstChild) label.firstChild.textContent = (online ? 'Link meeting' : 'Lokasi interview') + ' ';
+        };
+        modal.querySelectorAll('[data-metode-pilih]').forEach((radio) => {
+            radio.addEventListener('change', () => aturMetode(radio.value));
+            if (radio.checked) aturMetode(radio.value);
+        });
+
+        if (modal.hasAttribute('data-modal-otomatis')) buka(modal);
+    });
+}
+
+/* ─── Tombol "Kirim Undangan via WhatsApp" (admin) ─────────────── */
+// Form ber-target _blank: server mencatat waktu undangan lalu mengarahkan tab baru ke wa.me.
+// Halaman ini dimuat ulang sesaat kemudian agar "Undangan dikirim pada ..." langsung tampil.
+function aturKirimWhatsApp() {
+    document.querySelectorAll('form[data-kirim-wa]').forEach((form) => {
+        form.addEventListener('submit', () => {
+            const tombol = form.querySelector('button[type="submit"]');
+            if (tombol) { tombol.classList.add('is-loading'); tombol.setAttribute('aria-busy', 'true'); }
+            setTimeout(() => window.location.reload(), 1500);
+        });
+    });
+}
+
+/* ─── Foto profil: pratinjau bulat + pemeriksaan awal sebelum diunggah ─ */
+// Server tetap memvalidasi ulang (format, 2 MB, minimal 300x300 piksel).
+function aturFotoProfil() {
+    document.querySelectorAll('[data-foto-profil]').forEach((kartu) => {
+        const input = kartu.querySelector('[data-foto-input]');
+        const sekarang = kartu.querySelector('[data-foto-sekarang]');
+        const pratinjau = kartu.querySelector('[data-foto-pratinjau]');
+        const label = kartu.querySelector('[data-foto-label-pratinjau]');
+        const simpan = kartu.querySelector('[data-foto-simpan]');
+        const batal = kartu.querySelector('[data-foto-batal]');
+        const nama = kartu.querySelector('[data-foto-nama]');
+        const galat = kartu.querySelector('[data-foto-galat]');
+        const galatTeks = kartu.querySelector('[data-foto-galat-teks]');
+        if (!input || !pratinjau) return;
+
+        let urlLama = null;
+        const tampilGalat = (teks) => {
+            galatTeks.textContent = teks;
+            galat.classList.toggle('hidden', !teks);
+        };
+        const reset = () => {
+            input.value = '';
+            if (urlLama) { URL.revokeObjectURL(urlLama); urlLama = null; }
+            pratinjau.classList.add('hidden'); pratinjau.removeAttribute('src');
+            label?.classList.add('hidden');
+            sekarang.classList.remove('hidden');
+            nama.classList.add('hidden');
+            batal.classList.add('hidden');
+            simpan.disabled = true;
+        };
+
+        simpan.disabled = true; // aktif setelah file valid dipilih
+        batal.addEventListener('click', () => { reset(); tampilGalat(''); });
+
+        input.addEventListener('change', () => {
+            const berkas = input.files[0];
+            if (!berkas) { reset(); return; }
+
+            const jenisValid = ['image/jpeg', 'image/png', 'image/webp'].includes(berkas.type);
+            if (!jenisValid) { reset(); tampilGalat('File harus berupa gambar JPG, JPEG, PNG, atau WEBP.'); return; }
+            if (berkas.size > 2 * 1024 * 1024) { reset(); tampilGalat('Ukuran foto maksimal 2 MB.'); return; }
+
+            if (urlLama) URL.revokeObjectURL(urlLama);
+            urlLama = URL.createObjectURL(berkas);
+            const gambar = new Image();
+            gambar.onload = () => {
+                if (gambar.naturalWidth < 300 || gambar.naturalHeight < 300) {
+                    reset();
+                    tampilGalat('Ukuran foto minimal 300 x 300 piksel (foto Anda ' + gambar.naturalWidth + ' x ' + gambar.naturalHeight + ').');
+                    return;
+                }
+                tampilGalat('');
+                pratinjau.src = urlLama;
+                pratinjau.classList.remove('hidden');
+                label?.classList.remove('hidden');
+                sekarang.classList.add('hidden');
+                nama.textContent = berkas.name + ' (' + (berkas.size / 1024 / 1024).toFixed(2) + ' MB) - klik "Simpan Foto" untuk menyimpan.';
+                nama.classList.remove('hidden');
+                batal.classList.remove('hidden');
+                simpan.disabled = false;
+                if (!kurangiGerakan) { pratinjau.classList.remove('pop'); void pratinjau.offsetWidth; pratinjau.classList.add('pop'); }
+            };
+            gambar.onerror = () => { reset(); tampilGalat('File tidak dapat dibaca sebagai gambar.'); };
+            gambar.src = urlLama;
         });
     });
 }

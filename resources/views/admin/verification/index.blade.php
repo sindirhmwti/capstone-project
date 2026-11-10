@@ -41,7 +41,7 @@
                         <tr>
                             <td>
                                 <div class="flex items-center gap-3">
-                                    <x-avatar :name="$p->pengguna->nama" size="sm" />
+                                    <x-avatar :name="$p->pengguna->nama" :src="$p->pengguna->urlFotoProfil()" size="sm" />
                                     <div>
                                         <p class="font-semibold text-ink">{{ $p->pengguna->nama }}</p>
                                         <p class="text-xs text-muted">{{ $p->cekKelengkapanProfil() ? 'Profil lengkap' : 'Profil belum lengkap' }}</p>

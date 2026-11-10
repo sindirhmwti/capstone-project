@@ -37,7 +37,7 @@ class PekerjaController extends Controller
     /** Detail akun & profil pekerja. */
     public function show(ProfilPekerja $pekerja)
     {
-        $pekerja->load(['pengguna', 'dokumen', 'kriteria', 'verifikator', 'pemesanan.klien']);
+        $pekerja->load(['pengguna', 'dokumen', 'kriteria', 'verifikator', 'pemesanan.klien', 'penyaluranAktif.klien']);
 
         return view('admin.workers.show', [
             'profil' => $pekerja,
@@ -91,7 +91,7 @@ class PekerjaController extends Controller
 
     private function query(Request $request): Builder
     {
-        return ProfilPekerja::with('pengguna')
+        return ProfilPekerja::with(['pengguna', 'penyaluranAktif.klien'])
             ->when($request->filled('cari'), function (Builder $q) use ($request) {
                 $cari = $request->cari;
                 $q->where(fn ($w) => $w->where('keterampilan', 'like', "%{$cari}%")

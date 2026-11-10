@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Pemesanan extends Model
 {
@@ -93,6 +94,42 @@ class Pemesanan extends Model
     {
         return $this->hasMany(RiwayatStatusPemesanan::class, 'id_pemesanan', 'id_pemesanan')
             ->orderBy('tanggal_perubahan')->orderBy('id_riwayat');
+    }
+
+    /** Jadwal sesi interview (tabel jadwal_interview) yang dibuat saat pesanan disetujui. */
+    public function jadwalInterview(): HasOne
+    {
+        return $this->hasOne(JadwalInterview::class, 'id_pemesanan', 'id_pemesanan');
+    }
+
+    /** Data penyaluran (tabel penyaluran) bila hasil interview pesanan ini cocok. */
+    public function penyaluran(): HasOne
+    {
+        return $this->hasOne(Penyaluran::class, 'id_pemesanan', 'id_pemesanan');
+    }
+
+    /**
+     * Pemesanan yang dihitung sebagai PENYALURAN pada laporan: berstatus "selesai"
+     * (pekerja tersalurkan). Tanggal penyaluran = tanggal mulai kerja pada data penyaluran;
+     * untuk data lama tanpa data penyaluran dipakai jadwal mulai / tanggal pemesanan.
+     *
+     * @return \Illuminate\Support\Collection<int, Pemesanan>
+     */
+    public static function daftarPenyaluran(?\Carbon\Carbon $awalBulan = null, ?string $kategori = null)
+    {
+        return static::with(['klien', 'profilPekerja.pengguna', 'penyaluran'])
+            ->where('status_pemesanan', 'selesai')
+            ->when($kategori, fn ($q) => $q->whereHas('profilPekerja', fn ($p) => $p->where('kategori_pekerjaan', $kategori)))
+            ->get()
+            ->filter(fn (Pemesanan $o) => ! $awalBulan || $o->tanggalPenyaluran()->isSameMonth($awalBulan))
+            ->sortBy(fn (Pemesanan $o) => $o->tanggalPenyaluran()->timestamp)
+            ->values();
+    }
+
+    /** Tanggal pekerja mulai tersalurkan untuk pesanan ini. */
+    public function tanggalPenyaluran(): \Carbon\CarbonInterface
+    {
+        return $this->penyaluran?->tanggal_mulai ?? $this->tanggal_mulai ?? $this->tanggal_pemesanan;
     }
 
     /* ---------- Operasi ---------- */

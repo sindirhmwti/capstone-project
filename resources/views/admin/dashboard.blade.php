@@ -3,7 +3,8 @@
 @section('content')
 
 <x-banner-sambutan :eyebrow="'Admin · ' . now()->translatedFormat('l, d F Y')" :title="'Selamat datang, ' . auth()->user()->nama"
-                   text="Ringkasan administrasi penyaluran pekerja: verifikasi, pemesanan, dan laporan dalam satu tempat.">
+                   text="Ringkasan administrasi penyaluran pekerja: verifikasi, pemesanan, dan laporan dalam satu tempat."
+                   foto="untuk-keluarga" posisi-foto="object-[50%_30%]" label-foto="PT Shaka Abadi Nusantara">
     <a href="{{ route('admin.verification') }}" class="btn-sun"><x-icon name="shield-check" class="h-5 w-5" /> Periksa Verifikasi</a>
     <a href="{{ route('admin.orders') }}" class="btn-outline-light">Kelola Pemesanan</a>
 </x-banner-sambutan>
@@ -26,7 +27,7 @@
         <div class="flex-1">
             @forelse ($pendingVerifications as $p)
                 <a href="{{ route('admin.verification.show', $p) }}" class="flex items-center gap-3 border-b border-line px-5 py-3.5 transition-colors last:border-0 hover:bg-canvas">
-                    <x-avatar :name="$p->pengguna->nama" size="sm" />
+                    <x-avatar :name="$p->pengguna->nama" :src="$p->pengguna->urlFotoProfil()" size="sm" />
                     <div class="min-w-0 flex-1">
                         <p class="truncate text-sm font-semibold text-ink">{{ $p->pengguna->nama }}</p>
                         <p class="text-xs text-muted">{{ $p->labelKategori() }}</p>

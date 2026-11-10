@@ -19,7 +19,7 @@
                 <x-badge :status="$pemesanan->status_pemesanan">{{ $pemesanan->labelStatus() }}</x-badge>
             </div>
             <dl class="divide-y divide-line text-[15px]">
-                <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr]"><dt class="text-muted">Klien</dt><dd class="font-medium text-ink">{{ $pemesanan->klien->nama }}<span class="block font-normal text-muted">{{ $pemesanan->klien->email }} · {{ $pemesanan->klien->no_telepon }}</span></dd></div>
+                <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr]"><dt class="text-muted">Klien</dt><dd class="flex items-center gap-3 font-medium text-ink"><x-avatar :name="$pemesanan->klien->nama" :src="$pemesanan->klien->urlFotoProfil()" size="md" /><span class="min-w-0">{{ $pemesanan->klien->nama }}<span class="block font-normal text-muted">{{ $pemesanan->klien->email }} · {{ $pemesanan->klien->no_telepon }}</span></span></dd></div>
                 <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr]"><dt class="text-muted">Jadwal mulai</dt><dd class="font-medium">{{ $pemesanan->tanggal_mulai?->translatedFormat('d F Y') ?? '-' }}</dd></div>
                 <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr]"><dt class="text-muted">Lokasi pekerjaan</dt><dd class="font-medium">{{ $pemesanan->lokasi_kerja ?: '-' }}</dd></div>
                 <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr]"><dt class="text-muted">Keterangan klien</dt><dd class="whitespace-pre-line">{{ $pemesanan->catatan_klien ?: '-' }}</dd></div>
@@ -45,6 +45,13 @@
             @endif
         </div>
 
+        @if ($pemesanan->status_pemesanan === 'disetujui')
+            @include('admin.orders._interview')
+        @endif
+
+        {{-- Hasil interview (cocok / tidak cocok) & kabari via WhatsApp --}}
+        @include('admin.orders._hasil-interview')
+
         @include('components.riwayat-status')
     </div>
 
@@ -52,7 +59,7 @@
         <div class="card bg-mint-soft p-5">
             <p class="eyebrow">Calon pekerja terkait</p>
             <div class="mt-3 flex items-center gap-3">
-                <x-avatar :name="$p->pengguna->nama" size="lg" />
+                <x-avatar :name="$p->pengguna->nama" :src="$p->pengguna->urlFotoProfil()" size="lg" />
                 <div class="min-w-0">
                     <p class="truncate font-bold text-ink">{{ $p->pengguna->nama }}</p>
                     <p class="text-sm text-muted">{{ $p->labelKategori() }} · {{ $p->alamat }}</p>
@@ -67,12 +74,20 @@
         </div>
 
         @if ($pemesanan->statusBerikutnyaAdmin())
+            @php $bisaDisetujui = in_array('disetujui', $pemesanan->statusBerikutnyaAdmin(), true); @endphp
+            @if ($bisaDisetujui)
+                <div class="card card-body space-y-3 border-green-200 bg-green-50/60">
+                    <h2 class="card-title flex items-center gap-2"><x-icon name="check-circle" class="text-green-600" /> Setujui pesanan</h2>
+                    <p class="text-sm text-muted">Isi jadwal interview, lalu kirim undangan ke klien dan calon pekerja via WhatsApp.</p>
+                    <button type="button" class="btn-primary btn-lg w-full" data-modal-buka="modal-jadwal"><x-icon name="calendar" class="h-5 w-5" /> Setujui &amp; Jadwalkan Interview</button>
+                </div>
+            @endif
             <form method="POST" action="{{ route('admin.orders.status', $pemesanan) }}" class="card card-body space-y-4 ring-2 ring-primary/15" data-confirm="Simpan perubahan status pesanan?">
                 @csrf
                 @method('PATCH')
                 <h2 class="card-title flex items-center gap-2"><x-icon name="pencil" class="text-primary" /> Tindak lanjut pesanan</h2>
                 <x-field name="status_pemesanan" type="select" label="Ubah status menjadi" required
-                         :options="collect($pemesanan->statusBerikutnyaAdmin())->mapWithKeys(fn ($s) => [$s => \App\Models\Pemesanan::STATUS[$s]])->all()" />
+                         :options="collect($pemesanan->statusBerikutnyaAdmin())->reject(fn ($s) => $s === 'disetujui' || ($s === 'selesai' && $pemesanan->status_pemesanan === 'disetujui'))->mapWithKeys(fn ($s) => [$s => \App\Models\Pemesanan::STATUS[$s]])->all()" />
                 <x-field name="catatan" type="textarea" label="Catatan / alasan" placeholder="Wajib diisi bila ditolak atau dibatalkan" />
                 <button type="submit" class="btn-primary btn-lg w-full"><x-icon name="check" class="h-5 w-5" /> Simpan Status</button>
                 <p class="text-helper">Klien akan menerima notifikasi. Pekerja juga diberi tahu saat pesanan disetujui, selesai, atau dibatalkan.</p>
@@ -85,5 +100,30 @@
         @endif
     </aside>
 </div>
+
+{{-- Modal jadwal interview: "Setujui" (pesanan baru) atau "Ubah Jadwal & Kirim Ulang" (pesanan disetujui) --}}
+@if (in_array('disetujui', $pemesanan->statusBerikutnyaAdmin(), true))
+    @include('admin.orders._modal-jadwal', [
+        'idModal' => 'modal-jadwal',
+        'aksi' => route('admin.orders.approve', $pemesanan),
+        'metodeHttp' => 'POST',
+        'judul' => 'Setujui & Jadwalkan Interview',
+        'keterangan' => 'Pesanan ' . $pemesanan->kode() . ' akan berstatus Disetujui dan jadwal interview disimpan.',
+        'teksTombol' => 'Setujui & Simpan Jadwal',
+        'jadwal' => null,
+    ])
+@elseif ($pemesanan->status_pemesanan === 'disetujui')
+    @include('admin.orders._modal-jadwal', [
+        'idModal' => 'modal-jadwal',
+        'aksi' => route('admin.orders.interview', $pemesanan),
+        'metodeHttp' => 'PUT',
+        'judul' => $pemesanan->jadwalInterview ? 'Ubah Jadwal Interview' : 'Buat Jadwal Interview',
+        'keterangan' => $pemesanan->jadwalInterview
+            ? 'Konfirmasi kedua pihak kembali Menunggu dan undangan berikutnya diawali "PERUBAHAN JADWAL INTERVIEW".'
+            : 'Setelah disimpan, kirim undangan ke klien dan calon pekerja via WhatsApp.',
+        'teksTombol' => $pemesanan->jadwalInterview ? 'Simpan Perubahan' : 'Simpan Jadwal',
+        'jadwal' => $pemesanan->jadwalInterview,
+    ])
+@endif
 
 @endsection

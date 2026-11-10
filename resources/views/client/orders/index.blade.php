@@ -22,6 +22,17 @@
     ];
 @endphp
 
+@php
+    $pesanan->getCollection()->loadMissing('jadwalInterview');
+    $menungguKonfirmasi = $pesanan->getCollection()->filter(fn ($o) => $o->status_pemesanan === 'disetujui' && in_array($o->jadwalInterview?->konfirmasi('klien'), ['menunggu', 'tidak_merespons'], true));
+@endphp
+@if ($menungguKonfirmasi->isNotEmpty())
+    <x-alert type="warning" title="Undangan interview via WhatsApp" class="mb-5">
+        Pesanan Anda telah disetujui. Silakan cek WhatsApp Anda dan balas pesan dari admin untuk pesanan
+        @foreach ($menungguKonfirmasi as $o)<a href="{{ route('client.orders.show', $o) }}" class="font-bold underline underline-offset-2">{{ $o->kode() }}</a>{{ $loop->last ? '' : ', ' }}@endforeach.
+    </x-alert>
+@endif
+
 @if ($pesanan->isEmpty())
     <div class="card">
         <x-empty-state illustration="pesanan" title="Belum terdapat riwayat pesanan{{ $status !== 'semua' ? ' dengan status ini' : '' }}."
@@ -44,6 +55,13 @@
                         <span class="flex items-center gap-1.5" title="{{ $o->tanggal_pemesanan->translatedFormat('d F Y H:i') }}"><x-icon name="clock" class="h-4 w-4" /> Diajukan {{ $o->tanggal_pemesanan->diffForHumans() }}</span>
                         <span class="flex items-center gap-1.5"><x-icon name="calendar" class="h-4 w-4" /> Mulai {{ $o->tanggal_mulai?->translatedFormat('d M Y') ?? '-' }}</span>
                     </div>
+                    @if ($o->status_pemesanan === 'disetujui' && $o->jadwalInterview)
+                        @php $ki = $o->jadwalInterview->konfirmasi('klien'); @endphp
+                        <p class="mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold {{ ['hadir' => 'bg-green-100 text-green-800', 'minta_ubah' => 'bg-sky-100 text-sky-800'][$ki] ?? 'bg-sun-soft text-amber-900' }}">
+                            @if ($ki === 'hadir')<x-icon name="check-circle" class="h-3.5 w-3.5" />@else<x-ikon-whatsapp class="h-3.5 w-3.5" />@endif
+                            {{ ['hadir' => 'Interview: kehadiran dikonfirmasi', 'minta_ubah' => 'Interview: permintaan ubah jadwal ditinjau'][$ki] ?? 'Undangan interview via WhatsApp · cek WhatsApp Anda' }}
+                        </p>
+                    @endif
                 </div>
                 <span class="hidden h-10 w-10 items-center justify-center rounded-full bg-canvas text-muted transition-colors group-hover:bg-primary group-hover:text-white sm:flex"><x-icon name="arrow-right" class="h-5 w-5" /></span>
             </a>

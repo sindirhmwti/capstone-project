@@ -32,7 +32,19 @@
                             <td>{{ $o->profilPekerja->pengguna->nama }}<span class="block text-xs text-muted">{{ $o->profilPekerja->labelKategori() }}</span></td>
                             <td class="text-muted"><span title="{{ $o->tanggal_pemesanan->format('d/m/Y H:i') }}">{{ $o->tanggal_pemesanan->format('d/m/Y') }}</span><span class="block text-xs">{{ $o->tanggal_pemesanan->diffForHumans() }}</span></td>
                             <td class="text-muted">{{ $o->tanggal_mulai?->format('d/m/Y') ?? '-' }}</td>
-                            <td><x-badge :status="$o->status_pemesanan">{{ $o->labelStatus() }}</x-badge></td>
+                            <td>
+                                <x-badge :status="$o->status_pemesanan">{{ $o->labelStatus() }}</x-badge>
+                                @if ($o->status_pemesanan === 'disetujui')
+                                    @if ($o->jadwalInterview)
+                                        @php [$labelIndikator, $warnaIndikator] = $o->jadwalInterview->indikator(); @endphp
+                                        <a href="{{ route('admin.orders.show', $o) }}#jadwal-interview" class="mt-1.5 block w-fit" title="Status konfirmasi interview">
+                                            <x-badge :color="$warnaIndikator" :dot="false" class="!text-[11px]"><x-icon name="{{ $warnaIndikator === 'red' ? 'alert-circle' : 'calendar' }}" class="h-3 w-3" /> {{ $labelIndikator }}</x-badge>
+                                        </a>
+                                    @else
+                                        <span class="mt-1.5 block text-[11px] font-semibold text-muted">Belum ada jadwal interview</span>
+                                    @endif
+                                @endif
+                            </td>
                             <td class="text-right">
                                 @if ($o->statusBerikutnyaAdmin())
                                     <a href="{{ route('admin.orders.show', $o) }}" class="btn-primary btn-sm"><x-icon name="pencil" class="h-4 w-4" /> Kelola</a>

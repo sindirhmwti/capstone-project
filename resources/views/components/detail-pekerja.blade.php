@@ -26,7 +26,7 @@
         <div class="bg-grid-light pointer-events-none absolute inset-0"></div>
         <div class="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-primary-accent/30 blur-2xl"></div>
         <div class="relative flex flex-col gap-5 sm:flex-row sm:items-center">
-            <x-avatar :name="$profil->pengguna->nama" size="2xl" class="ring-4 ring-white/25" />
+            <x-avatar :name="$profil->pengguna->nama" :src="$profil->pengguna->urlFotoProfil()" size="2xl" class="ring-4 ring-white/25" />
             <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-center gap-2">
                     <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-mint">{{ $profil->labelKategori() }}</span>

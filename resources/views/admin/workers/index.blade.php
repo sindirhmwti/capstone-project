@@ -32,14 +32,14 @@
         <div class="table-wrap">
             <table class="table-base">
                 <thead>
-                    <tr><th>Nama pekerja</th><th>Identitas akun</th><th>Kategori</th><th>Lokasi</th><th>Verifikasi</th><th>Status</th><th class="text-right">Aksi</th></tr>
+                    <tr><th>Nama pekerja</th><th>Identitas akun</th><th>Kategori</th><th>Lokasi</th><th>Verifikasi</th><th>Ketersediaan</th><th>Status</th><th class="text-right">Aksi</th></tr>
                 </thead>
                 <tbody>
                     @foreach ($pekerja as $p)
                         <tr>
                             <td>
                                 <div class="flex items-center gap-3">
-                                    <x-avatar :name="$p->pengguna->nama" size="sm" />
+                                    <x-avatar :name="$p->pengguna->nama" :src="$p->pengguna->urlFotoProfil()" size="sm" />
                                     <div>
                                         <p class="font-semibold text-ink">{{ $p->pengguna->nama }}</p>
                                         <p class="text-xs text-muted">PK-{{ str_pad($p->id_pekerja, 3, '0', STR_PAD_LEFT) }}</p>
@@ -50,6 +50,14 @@
                             <td>{{ $p->labelKategori() }}</td>
                             <td>{{ $p->alamat ?: '-' }}</td>
                             <td><x-badge :status="$p->status_verifikasi">{{ $p->labelStatus() }}</x-badge></td>
+                            <td>
+                                @if ($p->penyaluranAktif)
+                                    <x-badge color="blue">Tersalurkan</x-badge>
+                                    <span class="mt-1 block text-xs text-muted">di {{ $p->penyaluranAktif->klien->nama }}</span>
+                                @else
+                                    <x-badge color="green">Tersedia</x-badge>
+                                @endif
+                            </td>
                             <td><x-badge :status="$p->pengguna->status_akun">{{ ucfirst($p->pengguna->status_akun) }}</x-badge></td>
                             <td>
                                 <div class="flex items-center justify-end gap-2">

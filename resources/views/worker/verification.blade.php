@@ -82,7 +82,11 @@
 
             @if ($profil->bisaDiajukan())
                 <div class="mt-6 border-t border-line pt-6">
-                    @unless ($siapDiajukan)
+                    @unless ($syarat['Foto profil sudah diunggah'])
+                        <x-alert type="warning" title="Unggah foto profil terlebih dahulu" class="mb-4">
+                            Foto profil wajib diunggah sebelum mengajukan verifikasi. <a href="{{ route('worker.profile.edit') }}#foto-profil" class="font-bold underline underline-offset-2">Unggah foto sekarang</a>
+                        </x-alert>
+                    @elseif (! $siapDiajukan)
                         <x-alert type="warning" class="mb-4">Data belum lengkap. Lengkapi semua syarat di samping sebelum mengajukan verifikasi.</x-alert>
                     @endunless
                     <form method="POST" action="{{ route('worker.verification.submit') }}">
@@ -91,6 +95,9 @@
                             <x-icon name="send" class="h-5 w-5" />
                             {{ $profil->status_verifikasi === 'ditolak' ? 'Ajukan Ulang Verifikasi' : 'Kirim untuk Verifikasi' }}
                         </button>
+                        @unless ($syarat['Foto profil sudah diunggah'])
+                            <p class="mt-2 flex items-center justify-center gap-1.5 text-sm font-semibold text-red-600"><x-icon name="lock" class="h-4 w-4" /> Unggah foto profil terlebih dahulu</p>
+                        @endunless
                     </form>
                 </div>
             @endif
@@ -112,7 +119,8 @@
             @endforeach
             <li class="flex items-center justify-between border-t border-line pt-3 text-sm">
                 <span class="text-muted">Tampil di katalog</span>
-                <span class="font-semibold {{ $profil->status_verifikasi === 'terverifikasi' && $pengguna->isAktif() ? 'text-green-700' : 'text-muted' }}">{{ $profil->status_verifikasi === 'terverifikasi' && $pengguna->isAktif() ? 'Ya' : 'Belum' }}</span>
+                @php $sedangBekerja = $profil->sedangTersalurkan(); @endphp
+                <span class="font-semibold {{ ! $sedangBekerja && $profil->status_verifikasi === 'terverifikasi' && $pengguna->isAktif() ? 'text-green-700' : 'text-muted' }}">{{ $sedangBekerja ? 'Tidak (sedang bekerja)' : ($profil->status_verifikasi === 'terverifikasi' && $pengguna->isAktif() ? 'Ya' : 'Belum') }}</span>
             </li>
             @if ($profil->tanggal_verifikasi)
                 <li class="flex items-center justify-between text-sm">
@@ -121,6 +129,9 @@
             @endif
         </ul>
         <div class="mt-5 space-y-2">
+            @unless ($syarat['Foto profil sudah diunggah'])
+                <a href="{{ route('worker.profile.edit') }}#foto-profil" class="btn-primary btn-sm w-full"><x-icon name="upload" class="h-4 w-4" /> Unggah foto profil</a>
+            @endunless
             @unless ($syarat['Data pribadi & profil lengkap'])
                 <a href="{{ route('worker.profile.edit') }}" class="btn-secondary btn-sm w-full">Lengkapi profil</a>
             @endunless

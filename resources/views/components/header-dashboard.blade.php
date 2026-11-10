@@ -49,7 +49,7 @@
 
             <details class="group relative">
                 <summary class="flex cursor-pointer items-center gap-2.5 rounded-full p-1 pr-2 transition-colors hover:bg-canvas sm:pr-3" aria-label="Menu profil">
-                    <x-avatar :name="$pengguna?->nama ?? 'Pengguna'" size="md" />
+                    <x-avatar :name="$pengguna?->nama ?? 'Pengguna'" :src="$pengguna?->urlFotoProfil()" size="md" />
                     <span class="hidden leading-tight md:block">
                         <span class="block max-w-40 truncate text-[15px] font-bold text-ink">{{ $pengguna?->nama }}</span>
                         <span class="block text-xs font-medium text-muted">{{ $labelPeran }}</span>

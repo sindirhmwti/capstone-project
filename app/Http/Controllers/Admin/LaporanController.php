@@ -22,8 +22,8 @@ class LaporanController extends Controller
     }
 
     /**
-     * Penyaluran = pemesanan yang disetujui atau selesai.
-     * Periode berupa bulan (YYYY-MM); kosong berarti semua periode.
+     * Penyaluran = pemesanan berstatus "selesai" (pekerja tersalurkan setelah hasil interview cocok).
+     * Periode berupa bulan (YYYY-MM) berdasarkan tanggal mulai kerja; kosong berarti semua periode.
      */
     private function dataLaporan(Request $request): array
     {
@@ -37,19 +37,15 @@ class LaporanController extends Controller
         $periode = $request->query('periode');
         $awal = $periode ? Carbon::createFromFormat('Y-m', $periode)->startOfMonth() : null;
 
-        $penyaluran = Pemesanan::with(['klien', 'profilPekerja.pengguna'])
-            ->whereIn('status_pemesanan', Pemesanan::STATUS_PENYALURAN)
-            ->when($awal, fn ($q) => $q->whereBetween('tanggal_pemesanan', [$awal, $awal->copy()->endOfMonth()]))
-            ->when($request->filled('kategori'), fn ($q) => $q->whereHas('profilPekerja', fn ($p) => $p->where('kategori_pekerjaan', $request->kategori)))
-            ->orderBy('tanggal_pemesanan')
-            ->get();
+        $penyaluran = Pemesanan::daftarPenyaluran($awal, $request->filled('kategori') ? $request->kategori : null);
 
         return [
             'penyaluran' => $penyaluran,
             'periode' => $periode,
             'labelPeriode' => $awal ? $awal->translatedFormat('F Y') : 'Semua periode',
             'perKategori' => $penyaluran->groupBy(fn ($o) => $o->profilPekerja->kategori_pekerjaan)->map->count(),
-            'perStatus' => $penyaluran->groupBy('status_pemesanan')->map->count(),
+            // Status masa kerja: aktif (masih bekerja) / berakhir; data lama tanpa data penyaluran dihitung "berakhir"
+            'perStatus' => $penyaluran->groupBy(fn ($o) => $o->penyaluran?->status ?? 'berakhir')->map->count(),
         ];
     }
 }

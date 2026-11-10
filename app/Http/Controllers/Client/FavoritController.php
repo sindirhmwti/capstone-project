@@ -12,7 +12,7 @@ class FavoritController extends Controller
     public function index(Request $request)
     {
         $favorit = $request->user()->favorit()
-            ->with('profilPekerja.pengguna')
+            ->with(['profilPekerja.pengguna', 'profilPekerja.penyaluranAktif'])
             ->latest('tanggal_ditambahkan')
             ->get();
 

@@ -56,7 +56,7 @@
         @foreach (\App\Models\ProfilPekerja::KATEGORI_SINGKAT as $kode => $label)
             <div><b>{{ $perKategori[$kode] ?? 0 }}</b>{{ $label }}</div>
         @endforeach
-        <div><b>{{ $perStatus['selesai'] ?? 0 }}</b>Selesai</div>
+        <div><b>{{ $perStatus['aktif'] ?? 0 }}</b>Masih bekerja</div>
     </div>
 
     <table>
@@ -83,8 +83,8 @@
                     <td>{{ $o->klien->nama }}</td>
                     <td>{{ $o->lokasi_kerja ?: $o->profilPekerja->alamat }}</td>
                     <td>{{ $o->tanggal_pemesanan->format('d/m/Y') }}</td>
-                    <td>{{ $o->tanggal_mulai?->format('d/m/Y') ?? '-' }}</td>
-                    <td>{{ $o->labelStatus() }}</td>
+                    <td>{{ $o->tanggalPenyaluran()->format('d/m/Y') }}</td>
+                    <td>{{ $o->penyaluran ? ($o->penyaluran->isAktif() ? 'Aktif' : 'Berakhir') : $o->labelStatus() }}</td>
                 </tr>
             @empty
                 <tr><td colspan="9" style="text-align:center">Data penyaluran tidak tersedia.</td></tr>

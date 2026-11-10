@@ -10,12 +10,12 @@ Foto stok hanya dipakai untuk bagian pemasaran/tampilan (beranda, login, registr
 
 | File | Dipakai di | Fotografer | Sumber |
 |---|---|---|---|
-| hero-keluarga.webp | Hero beranda | National Cancer Institute | https://unsplash.com/photos/BQPi8F_UON0 |
+| hero-keluarga.webp | Hero beranda & banner dashboard klien | National Cancer Institute | https://unsplash.com/photos/BQPi8F_UON0 |
 | layanan-art.webp | Kartu layanan ART | Jason Briscoe | https://unsplash.com/photos/GrdJp16CPk8 |
 | layanan-babysitter.webp | Kartu layanan Baby Sitter | Brian Wangenheim | https://unsplash.com/photos/pE6Au9jbTs0 |
 | layanan-lansia.webp | Kartu layanan Perawat Lansia | Age Cymru | https://unsplash.com/photos/2obyM4zYt3Y |
-| untuk-keluarga.webp | Bagian "Untuk Keluarga" | Jhon David | https://unsplash.com/photos/3WgkTDw7XyE |
-| untuk-pekerja.webp | Bagian "Untuk Calon Pekerja" & kartu pilih akun | Liliana Drew (Pexels) | https://www.pexels.com/photo/woman-in-black-shirt-holding-white-and-blue-sprayer-bottle-9462192/ |
+| untuk-keluarga.webp | Bagian "Untuk Keluarga" & banner dashboard admin | Jhon David | https://unsplash.com/photos/3WgkTDw7XyE |
+| untuk-pekerja.webp | Bagian "Untuk Calon Pekerja", kartu pilih akun & banner dashboard pekerja | Liliana Drew (Pexels) | https://www.pexels.com/photo/woman-in-black-shirt-holding-white-and-blue-sprayer-bottle-9462192/ |
 | panel-login.webp | Panel kiri halaman login | Golden Horn Bridge | https://unsplash.com/photos/JVTiBNe4V5A |
 | panel-registrasi.webp | Panel kiri halaman registrasi | Muhammad Iswandi | https://unsplash.com/photos/2lFt6pdPPoQ |
 | ruang-keluarga.webp | Latar CTA beranda & banner dashboard | Minh Pham | https://unsplash.com/photos/OtXADkUh3-I |

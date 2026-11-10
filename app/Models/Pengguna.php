@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Model Pengguna (generalisasi Admin, Klien, dan CalonPekerja pada Class Diagram).
@@ -32,6 +33,7 @@ class Pengguna extends Authenticatable
         'nama',
         'email',
         'no_telepon',
+        'foto_profil',
         'kata_sandi',
         'peran',
         'status_akun',
@@ -80,6 +82,31 @@ class Pengguna extends Authenticatable
             self::PERAN_KLIEN => 'client.dashboard',
             default => 'worker.dashboard',
         };
+    }
+
+    /* ---------- Foto profil ---------- */
+
+    /** Disk & folder penyimpanan foto profil (storage/app/public/foto-profil). */
+    public const DISK_FOTO = 'public';
+    public const FOLDER_FOTO = 'foto-profil';
+
+    public function punyaFotoProfil(): bool
+    {
+        return filled($this->foto_profil);
+    }
+
+    /** URL foto profil (mengikuti alamat website yang sedang dibuka), atau null bila belum ada. */
+    public function urlFotoProfil(): ?string
+    {
+        return $this->punyaFotoProfil() ? asset('storage/' . $this->foto_profil) : null;
+    }
+
+    /** Menghapus file foto profil dari storage (dipakai saat foto diganti / dihapus). */
+    public function hapusFileFotoProfil(): void
+    {
+        if ($this->punyaFotoProfil()) {
+            Storage::disk(self::DISK_FOTO)->delete($this->foto_profil);
+        }
     }
 
     /** Inisial nama untuk avatar. */

@@ -22,6 +22,23 @@
                 <x-badge :status="$profil->status_verifikasi">{{ $profil->labelStatus() }}</x-badge>
             </div>
 
+            {{-- Foto profil besar untuk dicocokkan dengan foto pada KTP --}}
+            @php $urlFoto = $profil->pengguna->urlFotoProfil(); @endphp
+            <div class="rounded-3xl border border-line bg-canvas/50 p-4">
+                <p class="mb-3 flex items-center gap-2 text-sm font-semibold"><x-icon name="user" class="h-4 w-4 text-primary" /> Foto profil</p>
+                @if ($urlFoto)
+                    <a href="{{ $urlFoto }}" target="_blank" rel="noopener" class="mx-auto block w-fit" title="Buka foto ukuran penuh">
+                        <x-avatar :name="$profil->pengguna->nama" :src="$urlFoto" size="4xl" class="ring-4 ring-white shadow-soft" :alt="'Foto profil ' . $profil->pengguna->nama" />
+                    </a>
+                    <p class="mt-3 text-center text-xs text-muted">Cocokkan wajah pada foto ini dengan foto di KTP. Bila tidak jelas, minta perbaikan dengan catatan, mis. "Foto profil tidak jelas, silakan ganti".</p>
+                @else
+                    <div class="flex items-center gap-3">
+                        <x-avatar :name="$profil->pengguna->nama" size="xl" />
+                        <p class="flex items-center gap-1.5 text-sm text-red-600"><x-icon name="x-circle" class="h-4 w-4 shrink-0" /> Pekerja belum mengunggah foto profil.</p>
+                    </div>
+                @endif
+            </div>
+
             @foreach ($profil->dokumenWajib() as $jenis)
                 @php $dok = $profil->dokumenTerbaru($jenis); @endphp
                 <div class="rounded-3xl border border-line bg-canvas/50 p-4">

@@ -15,7 +15,7 @@ class PemesananController extends Controller
     {
         $status = $request->query('status', 'semua');
 
-        $pesanan = Pemesanan::with(['klien', 'profilPekerja.pengguna'])
+        $pesanan = Pemesanan::with(['klien', 'profilPekerja.pengguna', 'jadwalInterview'])
             ->when($status !== 'semua', fn ($q) => $q->where('status_pemesanan', $status))
             ->when($request->filled('cari'), function ($q) use ($request) {
                 $cari = $request->cari;
@@ -34,7 +34,8 @@ class PemesananController extends Controller
     /** Detail pemesanan dan informasi pekerja terkait. */
     public function show(Pemesanan $pemesanan)
     {
-        $pemesanan->load(['klien', 'profilPekerja.pengguna', 'profilPekerja.kriteria', 'kriteria', 'riwayatStatus.pengubah', 'pembatal']);
+        $pemesanan->load(['klien', 'profilPekerja.pengguna', 'profilPekerja.kriteria', 'kriteria', 'riwayatStatus.pengubah', 'pembatal', 'jadwalInterview.pencatatHasil', 'penyaluran']);
+        $pemesanan->jadwalInterview?->setRelation('pemesanan', $pemesanan);
 
         return view('admin.orders.show', [
             'pemesanan' => $pemesanan,
@@ -60,15 +61,14 @@ class PemesananController extends Controller
             'catatan.required_if' => 'Alasan wajib diisi bila pesanan ditolak atau dibatalkan.',
         ]);
 
-        // Pekerja yang sedang bertugas tidak dapat disetujui untuk pesanan lain
+        // Pesanan disetujui diselesaikan lewat panel "Hasil Interview" agar data penyaluran terbentuk
+        if ($data['status_pemesanan'] === 'selesai' && $pemesanan->status_pemesanan === 'disetujui') {
+            return back()->with('error', 'Gunakan tombol "Cocok - Salurkan Pekerja" pada bagian Hasil Interview untuk menyelesaikan pesanan ini.');
+        }
+
+        // Persetujuan kini wajib disertai jadwal interview (tombol "Setujui" → Admin\InterviewController::setujui)
         if ($data['status_pemesanan'] === 'disetujui') {
-            $bentrok = Pemesanan::where('id_pekerja', $pemesanan->id_pekerja)
-                ->where('status_pemesanan', 'disetujui')
-                ->whereKeyNot($pemesanan->getKey())
-                ->exists();
-            if ($bentrok) {
-                return back()->with('error', 'Pekerja masih bertugas pada pesanan lain yang disetujui. Selesaikan pesanan tersebut terlebih dahulu.');
-            }
+            return back()->with('error', 'Gunakan tombol "Setujui & Jadwalkan Interview" agar jadwal tersimpan dan undangan email terkirim.');
         }
 
         $pemesanan->ubahStatus($data['status_pemesanan'], $request->user()->id_pengguna, $data['catatan'] ?? null);

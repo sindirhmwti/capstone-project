@@ -21,7 +21,7 @@
     <span class="h-1.5 bg-gradient-to-r {{ $pita }}" aria-hidden="true"></span>
     <div class="flex flex-1 flex-col p-5">
         <div class="flex items-start gap-4">
-            <x-avatar :name="$profil->pengguna->nama" size="lg" />
+            <x-avatar :name="$profil->pengguna->nama" :src="$profil->pengguna->urlFotoProfil()" size="lg" />
             <div class="min-w-0 flex-1">
                 <h3 class="truncate text-lg font-extrabold text-ink">{{ $profil->pengguna->nama }}</h3>
                 <div class="mt-1.5 flex flex-wrap items-center gap-1.5">

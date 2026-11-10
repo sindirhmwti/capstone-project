@@ -35,13 +35,13 @@
                 {{-- Menu profil (desktop) --}}
                 <details class="group relative hidden lg:block" data-menu-profil>
                     <summary class="nav-ubah flex cursor-pointer items-center gap-2.5 rounded-full border border-line/80 py-1.5 pl-1.5 pr-3.5 text-ink transition-colors hover:bg-primary-soft" aria-label="Menu akun">
-                        <x-avatar :name="$pengguna->nama" size="sm" class="ring-0" />
+                        <x-avatar :name="$pengguna->nama" :src="$pengguna->urlFotoProfil()" size="sm" class="ring-0" />
                         <span class="max-w-36 truncate text-[15px] font-bold">{{ $namaSingkat }}</span>
                         <x-icon name="chevron-down" class="h-4 w-4 transition-transform duration-200 group-open:rotate-180" />
                     </summary>
                     <div class="animate-fade-up absolute right-0 mt-3 w-72 overflow-hidden rounded-2xl border border-line bg-white p-2 text-ink shadow-lift">
                         <div class="flex items-center gap-3 border-b border-line px-3 pb-3 pt-2">
-                            <x-avatar :name="$pengguna->nama" size="md" />
+                            <x-avatar :name="$pengguna->nama" :src="$pengguna->urlFotoProfil()" size="md" />
                             <div class="min-w-0">
                                 <p class="truncate font-bold">{{ $pengguna->nama }}</p>
                                 <p class="truncate text-sm text-muted">{{ $labelPeran }} · {{ $pengguna->email }}</p>
@@ -79,7 +79,7 @@
 
     @auth
         <div class="flex items-center gap-3 border-b border-line bg-mint-soft px-5 py-4">
-            <x-avatar :name="$pengguna->nama" size="md" />
+            <x-avatar :name="$pengguna->nama" :src="$pengguna->urlFotoProfil()" size="md" />
             <div class="min-w-0">
                 <p class="truncate font-bold text-ink">{{ $pengguna->nama }}</p>
                 <p class="truncate text-sm text-muted">{{ $labelPeran }}</p>

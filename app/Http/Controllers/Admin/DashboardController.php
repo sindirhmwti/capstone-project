@@ -18,8 +18,8 @@ class DashboardController extends Controller
             'pending_verify' => ProfilPekerja::where('status_verifikasi', 'menunggu')->count(),
             'total_clients' => Pengguna::where('peran', Pengguna::PERAN_KLIEN)->count(),
             'incoming_orders' => Pemesanan::whereIn('status_pemesanan', ['menunggu', 'diproses'])->count(),
-            'placements_month' => Pemesanan::whereIn('status_pemesanan', Pemesanan::STATUS_PENYALURAN)
-                ->whereMonth('tanggal_pemesanan', now()->month)->whereYear('tanggal_pemesanan', now()->year)->count(),
+            // Sama dengan laporan: pekerja tersalurkan (pesanan selesai) berdasarkan tanggal mulai kerja
+            'placements_month' => Pemesanan::daftarPenyaluran(now()->startOfMonth())->count(),
         ];
 
         $perKategori = ProfilPekerja::selectRaw('kategori_pekerjaan, count(*) as jumlah')

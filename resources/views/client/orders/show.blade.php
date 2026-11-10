@@ -9,6 +9,20 @@
     'aksi' => '<a href="' . route('client.orders') . '" class="btn-secondary">Riwayat Pesanan</a>',
 ])
 
+@php
+    // Jadwal interview milik pesanan ini (hanya pesanan milik klien yang bisa dibuka, lihat pastikanMilik())
+    $jadwalInterview = $pemesanan->status_pemesanan === 'disetujui' ? $pemesanan->jadwalInterview : null;
+    $jadwalInterview?->setRelation('pemesanan', $pemesanan);
+@endphp
+@if ($jadwalInterview)
+    <x-banner-interview :jadwal="$jadwalInterview" pihak="klien" class="mb-6" />
+@endif
+@if ($pemesanan->status_pemesanan === 'selesai' && $pemesanan->penyaluran)
+    <x-alert type="success" title="Penyaluran berhasil!" class="mb-6">
+        {{ $pemesanan->profilPekerja->pengguna->nama }} {{ $pemesanan->penyaluran->isAktif() ? 'mulai bekerja' : 'telah bekerja' }} sejak {{ $pemesanan->penyaluran->labelTanggalMulai() }}@if ($pemesanan->penyaluran->tanggal_berakhir) hingga {{ $pemesanan->penyaluran->tanggal_berakhir->locale('id')->translatedFormat('d F Y') }}@endif.
+    </x-alert>
+@endif
+
 <div class="grid gap-6 xl:grid-cols-3">
     <div class="space-y-6 xl:col-span-2">
         <div class="card card-body">
@@ -49,7 +63,7 @@
         <a href="{{ route('client.workers.show', $pemesanan->profilPekerja) }}" class="card card-hover block overflow-hidden"><div class="bg-gradient-to-br from-primary-dark to-primary p-5 text-white">
             <p class="text-xs font-bold uppercase tracking-[0.16em] text-mint">Pekerja</p>
             <div class="mt-3 flex items-center gap-3">
-                <x-avatar :name="$pemesanan->profilPekerja->pengguna->nama" size="lg" />
+                <x-avatar :name="$pemesanan->profilPekerja->pengguna->nama" :src="$pemesanan->profilPekerja->pengguna->urlFotoProfil()" size="lg" />
                 <div class="min-w-0">
                     <p class="truncate text-lg font-extrabold">{{ $pemesanan->profilPekerja->pengguna->nama }}</p>
                     <p class="text-sm text-white/75">{{ $pemesanan->profilPekerja->labelKategori() }}</p>
